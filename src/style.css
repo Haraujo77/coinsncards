@@ -1,0 +1,94 @@
+:root {
+  --bg: #0b0c10;
+  --panel: rgba(10, 11, 16, 0.65);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.86);
+  --muted: rgba(255, 255, 255, 0.64);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --sans: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  font-family: var(--sans);
+  overflow: hidden;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+}
+
+#c {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#hud {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  max-width: min(560px, calc(100vw - 24px));
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.hud-title {
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
+
+.hud-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+#toast {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  max-width: min(560px, calc(100vw - 24px));
+  display: none;
+  pointer-events: none;
+}
+
+/* lil-gui theme polish */
+.lil-gui.root {
+  --background-color: rgba(10, 11, 16, 0.72);
+  --text-color: rgba(255, 255, 255, 0.86);
+  --title-background-color: rgba(255, 255, 255, 0.06);
+  --widget-color: rgba(255, 255, 255, 0.08);
+  --hover-color: rgba(255, 255, 255, 0.12);
+  --focus-color: rgba(255, 255, 255, 0.16);
+  --number-color: rgba(255, 255, 255, 0.86);
+  --string-color: rgba(255, 255, 255, 0.86);
+  --font-size: 12px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
