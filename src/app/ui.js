@@ -159,7 +159,8 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   // 4. Rotation
   const fMotion = gui.addFolder('Rotação');
   fMotion.add(state.orientation, 'mode', Object.values(OrientationMode)).name('Orientação').onChange(onAnyChange);
-  degController(fMotion, state.orientation, 'extraRotX', 'Extra X °', -180, 180, 1, onAnyChange);
+  degController(fMotion, state.orientation, 'extraRotX', 'Inclinar X °', -180, 180, 1, onAnyChange);
+  degController(fMotion, state.orientation, 'yawDeg', 'Giro em pé °', -180, 180, 1, onAnyChange);
   degController(fMotion, state.orientation, 'extraRotY', 'Extra Y °', -180, 180, 1, onAnyChange);
   degController(fMotion, state.orientation, 'extraRotZ', 'Extra Z °', -180, 180, 1, onAnyChange);
   fMotion.add(state.stagger, 'enabled').name('Stagger').onChange(onAnyChange);

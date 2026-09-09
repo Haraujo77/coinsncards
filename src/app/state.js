@@ -228,6 +228,8 @@ export function createDefaultState() {
       extraRotX: 0,
       extraRotY: 0,
       extraRotZ: 0,
+      /** Giro em torno do eixo vertical do mundo (não tomba a peça). */
+      yawDeg: 0,
     },
 
     stagger: {

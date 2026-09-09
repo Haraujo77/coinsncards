@@ -321,7 +321,7 @@ export const PRESETS = [
         isoSpacingZ: 2.55,
         isoRowOffset: 0.5,
       },
-      orientation: { mode: OrientationMode.FIXED, extraRotX: 90, extraRotY: 45, extraRotZ: 0 },
+      orientation: { mode: OrientationMode.FIXED, extraRotX: 90, extraRotY: 0, extraRotZ: 0, yawDeg: 0 },
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.2 },

@@ -86,6 +86,13 @@ function discOrientationQuaternion(item, state, camera) {
     ),
   );
   _q.multiply(_q2);
+
+  // World-up yaw: turns the piece without tipping it onto a corner.
+  const yaw = THREE.MathUtils.degToRad(o.yawDeg ?? 0);
+  if (yaw !== 0) {
+    _q2.setFromAxisAngle(_yAxis, yaw);
+    _q.premultiply(_q2);
+  }
   return _q;
 }
 
