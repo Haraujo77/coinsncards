@@ -65,6 +65,15 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fCard.add(state.card, 'varyThickness', 0, 0.5, 0.005).name('Var espessura').onChange(onAnyChange);
   fCard.add(state.card, 'varyCornerRadius', 0, 1.0, 0.01).name('Var corner').onChange(onAnyChange);
 
+  const fIcon = gui.addFolder('Icon (rounded square)');
+  fIcon.add(state.icon, 'size', 0.2, 8, 0.01).name('Tamanho').onChange(onAnyChange);
+  fIcon.add(state.icon, 'thickness', 0.01, 1, 0.005).name('Espessura').onChange(onAnyChange);
+  fIcon.add(state.icon, 'cornerRadius', 0, 0.49, 0.005).name('Corner radius').onChange(onAnyChange);
+  fIcon.add(state.icon, 'segments', 1, 16, 1).name('Segmentos').onChange(onAnyChange);
+  fIcon.add(state.icon, 'varyEnabled').name('Variação').onChange(onAnyChange);
+  fIcon.add(state.icon, 'varySize', 0, 0.5, 0.005).name('Var tamanho').onChange(onAnyChange);
+  fIcon.add(state.icon, 'varyThickness', 0, 0.5, 0.005).name('Var espessura').onChange(onAnyChange);
+
   const fDist = gui.addFolder('Distribuição');
   fDist.add(state.distribution, 'type', Object.values(DistributionType)).name('Tipo').onChange((v) => {
     if (v === DistributionType.COLUMN && state.distribution.columnCentered === false) {
@@ -99,6 +108,24 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
     }
     onAnyChange();
   });
+
+  const fMarket = fDist.addFolder('Marketplace layouts');
+  fMarket.add(state.distribution, 'carouselCount', 1, 64, 1).name('Carousel qtd').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'carouselRadius', 0.5, 40, 0.05).name('Carousel raio').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'carouselY', -20, 20, 0.05).name('Carousel Y').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'carouselFaceOut').name('Carousel face out').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'coverflowCount', 1, 64, 1).name('Coverflow qtd').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'coverflowRadius', 0.5, 40, 0.05).name('Coverflow raio').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'coverflowSpreadDeg', 20, 180, 1).name('Coverflow spread °').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'fanCount', 1, 64, 1).name('Fan qtd').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'fanSpacing', 0.05, 5, 0.01).name('Fan spacing').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'fanDepth', 0, 2, 0.01).name('Fan depth Z').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'rowCount', 1, 64, 1).name('Row qtd').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'rowSpacing', 0.1, 10, 0.01).name('Row spacing').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'rowAngleDeg', -90, 90, 1).name('Diagonal ângulo °').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'rowTiltDeg', -45, 45, 1).name('Diagonal tilt °').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'waveAmplitude', 0, 8, 0.05).name('Wave amplitude').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'waveLength', 0.1, 6, 0.05).name('Wave length').onChange(onAnyChange);
 
   const fLoop = fDist.addFolder('Loop (oval / retângulo / polígonos)');
   fLoop.add(state.distribution, 'loopShape', Object.values(LoopShape)).name('Forma do loop').onChange(onAnyChange);
@@ -177,6 +204,12 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
     const isGrid = type === DistributionType.GRID || type === DistributionType.CUBE || type === DistributionType.DIAMOND || type === DistributionType.SQUARE;
     const isLoop = type === DistributionType.LOOP;
     const isColumn = type === DistributionType.COLUMN;
+    const isMarket =
+      type === DistributionType.CAROUSEL ||
+      type === DistributionType.COVERFLOW ||
+      type === DistributionType.FAN ||
+      type === DistributionType.DIAGONAL_ROW ||
+      type === DistributionType.WAVE_ROW;
     const isRadial =
       type === DistributionType.CIRCLE ||
       type === DistributionType.RING ||
@@ -189,10 +222,12 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
     fGrid.domElement.style.display = isGrid ? '' : 'none';
     fLoop.domElement.style.display = isLoop ? '' : 'none';
     fColumn.domElement.style.display = isColumn ? '' : 'none';
+    fMarket.domElement.style.display = isMarket ? '' : 'none';
     fRadial.domElement.style.display = isRadial ? '' : 'none';
     fSphere.domElement.style.display = isSphere ? '' : 'none';
     fDisc.domElement.style.display = obj === ObjectType.COIN ? '' : 'none';
     fCard.domElement.style.display = obj === ObjectType.CARD ? '' : 'none';
+    fIcon.domElement.style.display = obj === ObjectType.ICON ? '' : 'none';
   }
 
   const oldOnAny = onAnyChange;

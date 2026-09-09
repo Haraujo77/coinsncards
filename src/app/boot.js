@@ -145,14 +145,13 @@ export function boot() {
 
     // rebuild geometry if object/quality changed
     const objType = state.object?.type ?? 'coin';
-    if (objType === 'card') {
-      const seg = Math.max(1, Math.floor(state.card.segments));
-      const cr = Math.max(0, Math.min(0.49, (state.card.cornerRadius ?? 0.06)));
-      const key = `card:${seg}:${cr.toFixed(4)}`;
+    if (objType === 'card' || objType === 'icon') {
+      const src = objType === 'icon' ? state.icon : state.card;
+      const seg = Math.max(1, Math.floor(src.segments ?? 6));
+      const cr = Math.max(0, Math.min(0.49, (src.cornerRadius ?? (objType === 'icon' ? 0.22 : 0.06))));
+      const key = `${objType}:${seg}:${cr.toFixed(4)}`;
       if (geometryKey !== key) {
         geometry.dispose?.();
-        // cornerRadius in unit space: we interpret `cornerRadius` as fraction of min(width,height)
-        // but since geometry is unit and we scale per-instance, using the fraction directly is stable.
         geometry = createUnitCardGeometry(cr, seg);
         geometryKey = key;
         inst.solid.geometry = geometry;
@@ -213,7 +212,9 @@ export function boot() {
     const extra =
       (state.object?.type === 'card')
         ? (Math.max(state.card.width ?? 1.586, state.card.height ?? 1) * 0.75)
-        : ((state.disc.diameter ?? 1) * 0.75);
+        : (state.object?.type === 'icon')
+          ? ((state.icon.size ?? 1) * 0.85)
+          : ((state.disc.diameter ?? 1) * 0.75);
     const r = Math.max(0.5, bounds.radius * scale + extra);
     const fov = THREE.MathUtils.degToRad(camera.fov);
     const dist = (r / Math.sin(Math.max(1e-3, fov * 0.5))) * 1.15;

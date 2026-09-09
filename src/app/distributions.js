@@ -27,6 +27,16 @@ export function generateDistribution(state) {
       return genLoop(state);
     case DistributionType.COLUMN:
       return genColumn(state);
+    case DistributionType.CAROUSEL:
+      return genCarousel(state);
+    case DistributionType.COVERFLOW:
+      return genCoverflow(state);
+    case DistributionType.FAN:
+      return genFan(state);
+    case DistributionType.DIAGONAL_ROW:
+      return genDiagonalRow(state);
+    case DistributionType.WAVE_ROW:
+      return genWaveRow(state);
     case DistributionType.CUBE:
       return genCube(state);
     case DistributionType.SPHERE:
@@ -74,8 +84,120 @@ function genColumn(state) {
       : axis === 'z'
         ? new THREE.Vector3(0, 0, 1)
         : new THREE.Vector3(0, 1, 0);
-    // u=t: progresso monotônico ao longo da coluna (útil para stagger não-espelhado)
     items.push(makeItem(i, pos, normal, tangent, row, col, layer, t, 0, 0));
+  }
+  return items;
+}
+
+/** Circular carousel in XZ — icons/cards around a ring, facing in or out. */
+function genCarousel(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.carouselCount ?? d.count ?? 16));
+  const r = Math.max(1e-6, d.carouselRadius ?? d.radius ?? 6);
+  const y = d.carouselY ?? 0;
+  const faceOut = d.carouselFaceOut !== false;
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0 : i / n;
+    const a = t * Math.PI * 2;
+    const cx = Math.cos(a);
+    const cz = Math.sin(a);
+    const pos = new THREE.Vector3(cx * r, y, cz * r);
+    const radial = new THREE.Vector3(cx, 0, cz).normalize();
+    const normal = faceOut ? radial.clone() : radial.clone().multiplyScalar(-1);
+    const tangent = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a)).normalize();
+    items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
+  }
+  return items;
+}
+
+/** Coverflow-style arc facing +Z (viewer). */
+function genCoverflow(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.coverflowCount ?? d.count ?? 12));
+  const r = Math.max(1e-6, d.coverflowRadius ?? 8);
+  const spread = THREE.MathUtils.degToRad(d.coverflowSpreadDeg ?? 110);
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0.5 : i / (n - 1);
+    const a = -spread * 0.5 + t * spread;
+    // Arc centered on +Z so the middle item faces the camera
+    const x = Math.sin(a) * r;
+    const z = -Math.cos(a) * r + r;
+    const pos = new THREE.Vector3(x, 0, z);
+    // Face toward origin-ish (viewer along +Z looking at origin)
+    const normal = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a)).normalize();
+    const tangent = new THREE.Vector3(Math.cos(a), 0, Math.sin(a)).normalize();
+    items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
+  }
+  return items;
+}
+
+/**
+ * Vertical fan / stepped deck (marketplace hero stack).
+ * Items layered in Y with slight Z depth so the front card reads clearly.
+ */
+function genFan(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.fanCount ?? d.count ?? 10));
+  const sp = Math.max(1e-6, d.fanSpacing ?? 0.55);
+  const depth = d.fanDepth ?? 0.18;
+  const c = (n - 1) * 0.5;
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0.5 : i / (n - 1);
+    // Center index is closest to camera (lower Z)
+    const fromCenter = i - c;
+    const pos = new THREE.Vector3(0, fromCenter * sp, Math.abs(fromCenter) * depth);
+    const normal = new THREE.Vector3(0, 0, 1);
+    const tangent = new THREE.Vector3(1, 0, 0);
+    items.push(makeItem(i, pos, normal, tangent, i, 0, 0, t, 0, 0));
+  }
+  return items;
+}
+
+/** Diagonal shelf / row for marketplace browsing. */
+function genDiagonalRow(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.rowCount ?? d.count ?? 12));
+  const sp = Math.max(1e-6, d.rowSpacing ?? 1.35);
+  const ang = THREE.MathUtils.degToRad(d.rowAngleDeg ?? 35);
+  const tilt = THREE.MathUtils.degToRad(d.rowTiltDeg ?? 12);
+  const dir = new THREE.Vector3(Math.cos(ang), Math.sin(tilt) * 0.35, Math.sin(ang)).normalize();
+  const c = (n - 1) * 0.5;
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0.5 : i / (n - 1);
+    const pos = dir.clone().multiplyScalar((i - c) * sp);
+    const normal = new THREE.Vector3(0, 0, 1);
+    const tangent = dir.clone();
+    items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
+  }
+  return items;
+}
+
+/** Horizontal row with sine wave lift — soft marketplace parade. */
+function genWaveRow(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.rowCount ?? d.count ?? 12));
+  const sp = Math.max(1e-6, d.rowSpacing ?? 1.35);
+  const amp = d.waveAmplitude ?? 1.2;
+  const wl = Math.max(0.1, d.waveLength ?? 1.0);
+  const c = (n - 1) * 0.5;
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0.5 : i / (n - 1);
+    const x = (i - c) * sp;
+    const y = Math.sin(t * Math.PI * 2 * wl) * amp;
+    const pos = new THREE.Vector3(x, y, 0);
+    const normal = new THREE.Vector3(0, 0, 1);
+    const tangent = new THREE.Vector3(1, 0, 0);
+    items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
   }
   return items;
 }

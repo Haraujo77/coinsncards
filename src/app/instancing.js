@@ -145,6 +145,19 @@ export function buildInstanceScales(state, count) {
       const sz = Math.max(1e-6, h);
       scales[i] = { sx, sy, sz };
       radii[i] = estimateBoxBoundingSphereRadius(w, h, th);
+    } else if (type === ObjectType.ICON) {
+      const icon = state.icon;
+      let size = icon.size ?? 1;
+      let th = icon.thickness ?? 0.12;
+      if (icon.varyEnabled) {
+        size *= 1 + (rng() * 2 - 1) * (icon.varySize ?? 0);
+        th *= 1 + (rng() * 2 - 1) * (icon.varyThickness ?? 0);
+      }
+      const sx = Math.max(1e-6, size);
+      const sy = Math.max(1e-6, th);
+      const sz = Math.max(1e-6, size);
+      scales[i] = { sx, sy, sz };
+      radii[i] = estimateBoxBoundingSphereRadius(size, size, th);
     } else {
       const disc = state.disc;
       let dia = disc.diameter;

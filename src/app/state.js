@@ -14,11 +14,20 @@ export const DistributionType = Object.freeze({
   SPIRAL: 'spiral',
   CYLINDER: 'cylinder',
   TORUS: 'torus',
+
+  /** Marketplace layouts */
+  CAROUSEL: 'carousel',
+  COVERFLOW: 'coverflow',
+  FAN: 'fan',
+  DIAGONAL_ROW: 'diagonalRow',
+  WAVE_ROW: 'waveRow',
 });
 
 export const ObjectType = Object.freeze({
   COIN: 'coin',
   CARD: 'card',
+  /** Rounded square app icon (squircle). */
+  ICON: 'icon',
 });
 
 /** Forma do perímetro quando `distribution.type === loop`. Círculo usa elipse (w×d); demais polígonos usam o mesmo escalamento nos vértices. */
@@ -118,6 +127,18 @@ export function createDefaultState() {
       varyCornerRadius: 0.15,
     },
 
+    icon: {
+      /** Lado do ícone (quadrado). */
+      size: 1.0,
+      thickness: 0.12,
+      /** Corner radius alto ≈ app icon / squircle. */
+      cornerRadius: 0.22,
+      segments: 8,
+      varyEnabled: false,
+      varySize: 0.04,
+      varyThickness: 0.03,
+    },
+
     distribution: {
       type: DistributionType.LOOP,
       fillMode: FillMode.OUTLINE,
@@ -158,6 +179,25 @@ export function createDefaultState() {
       columnSpacing: 1.2,
       /** Se false, a coluna começa em 0 e só cresce positivo (não centrada). */
       columnCentered: true,
+
+      // marketplace layouts
+      carouselCount: 16,
+      carouselRadius: 6,
+      carouselY: 0,
+      carouselFaceOut: true,
+      coverflowCount: 12,
+      coverflowRadius: 8,
+      coverflowSpreadDeg: 110,
+      fanCount: 10,
+      fanSpacing: 0.55,
+      fanDepth: 0.18,
+      fanScaleFalloff: 0.04,
+      rowCount: 12,
+      rowSpacing: 1.35,
+      rowAngleDeg: 35,
+      rowTiltDeg: 12,
+      waveAmplitude: 1.2,
+      waveLength: 1.0,
 
       // sphere
       sphereRadius: 9,
