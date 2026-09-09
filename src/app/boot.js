@@ -207,6 +207,10 @@ export function boot() {
   function frameComposition() {
     const c = state.camera;
     if (!c || !bounds) return;
+    if (c.lockFraming) {
+      applyCameraFromState();
+      return;
+    }
     const t = state.transform;
     const scale = Math.max(1e-6, t.scale ?? 1);
     const extra =
@@ -233,7 +237,7 @@ export function boot() {
     deepMerge(state, preset.state);
     ui.setPreset?.(preset.name);
     dirty = true;
-    requestFrame = true;
+    requestFrame = !preset.state.camera;
     toast(`Preset: ${preset.name}`);
   }
 
@@ -272,7 +276,7 @@ export function boot() {
       deepMerge(state, incomingState);
       ui.setPreset?.(name);
       dirty = true;
-      requestFrame = true;
+      requestFrame = !incomingState?.camera;
       toast(`Preset carregado: ${name}`);
     },
   });

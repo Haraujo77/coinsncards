@@ -253,6 +253,8 @@ export function createDefaultState() {
     },
 
     camera: {
+      /** Se true, presets/apply não substituem azimuth/polar/distance/target pelo auto-frame. */
+      lockFraming: false,
       /** Mantém a UI sincronizada com drag (OrbitControls). */
       syncFromOrbit: true,
       /** Ângulo azimutal em graus (rotação em torno de Y). */

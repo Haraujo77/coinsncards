@@ -164,6 +164,7 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   degController(fTransform, state.transform, 'rotZ', 'Rot Z (°)', -180, 180, 1, onAnyChange);
 
   const fCamera = gui.addFolder('Câmera');
+  fCamera.add(state.camera, 'lockFraming').name('Travar framing').onChange(onAnyChange);
   fCamera.add(state.camera, 'syncFromOrbit').name('Sync do drag').onChange(onAnyChange);
   degController(fCamera, state.camera, 'azimuthDeg', 'Azimuth (°)', -180, 180, 0.1, onAnyChange);
   degController(fCamera, state.camera, 'polarDeg', 'Polar (°)', 1, 179, 0.1, onAnyChange);
