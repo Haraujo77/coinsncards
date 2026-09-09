@@ -309,6 +309,35 @@ export const PRESETS = [
     },
   },
   {
+    name: 'Icon Iso Grid',
+    state: {
+      object: { type: 'icon' },
+      icon: { size: 1.0, thickness: 0.1, cornerRadius: 0.18, segments: 8 },
+      distribution: {
+        type: DistributionType.ISO_GRID,
+        isoCountX: 5,
+        isoCountZ: 4,
+        isoSpacingX: 2.35,
+        isoSpacingZ: 2.55,
+        isoRowOffset: 0.5,
+      },
+      orientation: { mode: OrientationMode.FIXED, extraRotX: 90, extraRotY: 45, extraRotZ: 0 },
+      stagger: { enabled: false },
+      collision: { mode: CollisionMode.OFF },
+      transform: { scale: 2.2 },
+      render: { background: '#f3f1ec' },
+      camera: {
+        lockFraming: true,
+        azimuthDeg: 45,
+        polarDeg: 54,
+        distance: 18,
+        targetX: 0.2,
+        targetY: 0.4,
+        targetZ: 0.2,
+      },
+    },
+  },
+  {
     name: 'Twisted Ring',
     state: {
       distribution: {

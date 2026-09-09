@@ -21,6 +21,8 @@ export const DistributionType = Object.freeze({
   FAN: 'fan',
   DIAGONAL_ROW: 'diagonalRow',
   WAVE_ROW: 'waveRow',
+  /** Staggered isometric floor grid (marketplace tiles). */
+  ISO_GRID: 'isoGrid',
 });
 
 export const ObjectType = Object.freeze({
@@ -196,6 +198,11 @@ export function createDefaultState() {
       rowSpacing: 1.35,
       rowAngleDeg: 35,
       rowTiltDeg: 12,
+      isoCountX: 5,
+      isoCountZ: 4,
+      isoSpacingX: 2.4,
+      isoSpacingZ: 2.6,
+      isoRowOffset: 0.5,
       waveAmplitude: 1.2,
       waveLength: 1.0,
 

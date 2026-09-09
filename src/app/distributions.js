@@ -37,6 +37,8 @@ export function generateDistribution(state) {
       return genDiagonalRow(state);
     case DistributionType.WAVE_ROW:
       return genWaveRow(state);
+    case DistributionType.ISO_GRID:
+      return genIsoGrid(state);
     case DistributionType.CUBE:
       return genCube(state);
     case DistributionType.SPHERE:
@@ -198,6 +200,40 @@ function genWaveRow(state) {
     const normal = new THREE.Vector3(0, 0, 1);
     const tangent = new THREE.Vector3(1, 0, 0);
     items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
+  }
+  return items;
+}
+
+/**
+ * Staggered isometric floor grid: tiles stand on XZ, brick-offset rows,
+ * all facing the same direction (like a marketplace field of slabs).
+ */
+function genIsoGrid(state) {
+  const d = state.distribution;
+  const nx = Math.max(1, Math.floor(d.isoCountX ?? 5));
+  const nz = Math.max(1, Math.floor(d.isoCountZ ?? 4));
+  const sx = Math.max(1e-6, d.isoSpacingX ?? 2.4);
+  const sz = Math.max(1e-6, d.isoSpacingZ ?? 2.6);
+  const rowOff = d.isoRowOffset ?? 0.5;
+  const cx = (nx - 1) * 0.5;
+  const cz = (nz - 1) * 0.5;
+  const items = [];
+  let i = 0;
+
+  for (let z = 0; z < nz; z++) {
+    const brick = (z % 2 === 0 ? 0 : rowOff) * sx;
+    const centerFix = rowOff * sx * 0.5;
+    for (let x = 0; x < nx; x++) {
+      const px = (x - cx) * sx + brick - centerFix;
+      const pz = (z - cz) * sz;
+      const pos = new THREE.Vector3(px, 0, pz);
+      const normal = new THREE.Vector3(0, 0, 1);
+      const tangent = new THREE.Vector3(1, 0, 0);
+      const u = nx === 1 ? 0.5 : x / (nx - 1);
+      const w = nz === 1 ? 0.5 : z / (nz - 1);
+      items.push(makeItem(i, pos, normal, tangent, z, x, 0, u, 0, w));
+      i++;
+    }
   }
   return items;
 }

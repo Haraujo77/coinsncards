@@ -126,6 +126,11 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fMarket.add(state.distribution, 'rowTiltDeg', -45, 45, 1).name('Diagonal tilt °').onChange(onAnyChange);
   fMarket.add(state.distribution, 'waveAmplitude', 0, 8, 0.05).name('Wave amplitude').onChange(onAnyChange);
   fMarket.add(state.distribution, 'waveLength', 0.1, 6, 0.05).name('Wave length').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'isoCountX', 1, 24, 1).name('Iso grid X').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'isoCountZ', 1, 24, 1).name('Iso grid Z').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'isoSpacingX', 0.2, 12, 0.05).name('Iso espaço X').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'isoSpacingZ', 0.2, 12, 0.05).name('Iso espaço Z').onChange(onAnyChange);
+  fMarket.add(state.distribution, 'isoRowOffset', 0, 1, 0.01).name('Iso offset linha').onChange(onAnyChange);
 
   const fLoop = fDist.addFolder('Loop (oval / retângulo / polígonos)');
   fLoop.add(state.distribution, 'loopShape', Object.values(LoopShape)).name('Forma do loop').onChange(onAnyChange);
@@ -210,7 +215,8 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
       type === DistributionType.COVERFLOW ||
       type === DistributionType.FAN ||
       type === DistributionType.DIAGONAL_ROW ||
-      type === DistributionType.WAVE_ROW;
+      type === DistributionType.WAVE_ROW ||
+      type === DistributionType.ISO_GRID;
     const isRadial =
       type === DistributionType.CIRCLE ||
       type === DistributionType.RING ||
