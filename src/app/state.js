@@ -88,7 +88,7 @@ export const CollisionMode = Object.freeze({
 
 export function createDefaultState() {
   return {
-    preset: 'Circle Loop',
+    preset: 'Icon Iso Grid',
 
     render: {
       background: '#0b0c10',
