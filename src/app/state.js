@@ -187,6 +187,14 @@ export function createDefaultState() {
       carouselRadius: 6,
       carouselY: 0,
       carouselFaceOut: true,
+      /** Anéis empilhados no eixo Y (1 = anel único). */
+      carouselRings: 1,
+      carouselRingSpacing: 2.2,
+      /** Defasagem angular entre anéis empilhados (°). */
+      carouselRingPhaseDeg: 0,
+      /** Anéis concêntricos no plano XZ (1 = só o raio base). */
+      carouselNested: 1,
+      carouselNestedGap: 2.4,
       coverflowCount: 12,
       coverflowRadius: 8,
       coverflowSpreadDeg: 110,

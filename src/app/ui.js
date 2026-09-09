@@ -109,9 +109,14 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fColumn.add(state.distribution, 'columnCentered').name('Centrada').onChange(onAnyChange);
 
   const fCarousel = fLayout.addFolder('Carousel');
-  fCarousel.add(state.distribution, 'carouselCount', 1, 64, 1).name('Qtd').onChange(onAnyChange);
+  fCarousel.add(state.distribution, 'carouselCount', 1, 64, 1).name('Qtd / anel').onChange(onAnyChange);
   fCarousel.add(state.distribution, 'carouselRadius', 0.5, 40, 0.05).name('Raio').onChange(onAnyChange);
   fCarousel.add(state.distribution, 'carouselFaceOut').name('Face para fora').onChange(onAnyChange);
+  fCarousel.add(state.distribution, 'carouselRings', 1, 6, 1).name('Anéis Y').onChange(onAnyChange);
+  fCarousel.add(state.distribution, 'carouselRingSpacing', 0.2, 12, 0.05).name('Espaço Y').onChange(onAnyChange);
+  fCarousel.add(state.distribution, 'carouselRingPhaseDeg', 0, 180, 1).name('Fase anel °').onChange(onAnyChange);
+  fCarousel.add(state.distribution, 'carouselNested', 1, 5, 1).name('Anéis concêntr.').onChange(onAnyChange);
+  fCarousel.add(state.distribution, 'carouselNestedGap', 0.4, 12, 0.05).name('Gap raio').onChange(onAnyChange);
 
   const fCoverflow = fLayout.addFolder('Coverflow');
   fCoverflow.add(state.distribution, 'coverflowCount', 1, 64, 1).name('Qtd').onChange(onAnyChange);

@@ -102,6 +102,7 @@ export function boot() {
 
   let dirty = true;
   let requestFrame = true;
+  let skipOrbitSync = false;
 
   function applyCameraFromState() {
     const c = state.camera;
@@ -121,6 +122,7 @@ export function boot() {
       dist * Math.cos(pol),
       dist * sinPhi * Math.cos(az),
     );
+    if (!Number.isFinite(offset.x + offset.y + offset.z)) return;
     camera.position.copy(controls.target).add(offset);
     camera.lookAt(controls.target);
     controls.update();
@@ -198,6 +200,7 @@ export function boot() {
       // Mantém target/ângulos consistentes com o state
       applyCameraFromState();
     }
+    renderer.render(scene, camera);
   }
 
   function onAnyChange() {
@@ -238,6 +241,8 @@ export function boot() {
     ui.setPreset?.(preset.name);
     dirty = true;
     requestFrame = !preset.state.camera;
+    skipOrbitSync = true;
+    rebuild();
     toast(`Preset: ${preset.name}`);
   }
 
@@ -277,6 +282,8 @@ export function boot() {
       ui.setPreset?.(name);
       dirty = true;
       requestFrame = !incomingState?.camera;
+      skipOrbitSync = true;
+      rebuild();
       toast(`Preset carregado: ${name}`);
     },
   });
@@ -317,9 +324,6 @@ export function boot() {
     },
   });
 
-  // initial build
-  rebuild();
-
   function resize() {
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
@@ -335,11 +339,22 @@ export function boot() {
   });
   resize();
 
+  // Apply the named default preset after the canvas has a real size,
+  // so OrbitControls does not produce a NaN camera on a 0×0 viewport.
+  {
+    const preset = getPresetByName(state.preset);
+    deepMerge(state, preset.state);
+    ui.setPreset?.(preset.name);
+    skipOrbitSync = true;
+    requestFrame = !preset.state.camera;
+    rebuild();
+  }
+
   let lastUiSyncMs = 0;
   renderer.setAnimationLoop(() => {
     controls.update();
     // Se o usuário arrasta, mantém sliders sincronizados (opcional)
-    if (state.camera?.syncFromOrbit) {
+    if (state.camera?.syncFromOrbit && !skipOrbitSync) {
       captureCameraToState();
       const now = performance.now();
       if (now - lastUiSyncMs > 60) {
@@ -347,6 +362,7 @@ export function boot() {
         lastUiSyncMs = now;
       }
     }
+    skipOrbitSync = false;
     if (dirty) rebuild();
     renderer.render(scene, camera);
   });

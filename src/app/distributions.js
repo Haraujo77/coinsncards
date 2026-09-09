@@ -95,21 +95,37 @@ function genColumn(state) {
 function genCarousel(state) {
   const d = state.distribution;
   const n = Math.max(1, Math.floor(d.carouselCount ?? d.count ?? 16));
-  const r = Math.max(1e-6, d.carouselRadius ?? d.radius ?? 6);
-  const y = d.carouselY ?? 0;
+  const r0 = Math.max(1e-6, d.carouselRadius ?? d.radius ?? 6);
+  const y0 = d.carouselY ?? 0;
   const faceOut = d.carouselFaceOut !== false;
+  const ringsY = Math.max(1, Math.floor(d.carouselRings ?? 1));
+  const ringSpacing = d.carouselRingSpacing ?? 2.2;
+  const phaseStep = THREE.MathUtils.degToRad(d.carouselRingPhaseDeg ?? 0);
+  const nested = Math.max(1, Math.floor(d.carouselNested ?? 1));
+  const nestedGap = d.carouselNestedGap ?? 2.4;
   const items = [];
+  let i = 0;
 
-  for (let i = 0; i < n; i++) {
-    const t = n === 1 ? 0 : i / n;
-    const a = t * Math.PI * 2;
-    const cx = Math.cos(a);
-    const cz = Math.sin(a);
-    const pos = new THREE.Vector3(cx * r, y, cz * r);
-    const radial = new THREE.Vector3(cx, 0, cz).normalize();
-    const normal = faceOut ? radial.clone() : radial.clone().multiplyScalar(-1);
-    const tangent = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a)).normalize();
-    items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
+  for (let nest = 0; nest < nested; nest++) {
+    const r = r0 + nest * nestedGap;
+    for (let ring = 0; ring < ringsY; ring++) {
+      const y = y0 + ring * ringSpacing;
+      const phase = ring * phaseStep + nest * phaseStep;
+      for (let k = 0; k < n; k++) {
+        const t = n === 1 ? 0 : k / n;
+        const a = t * Math.PI * 2 + phase;
+        const cx = Math.cos(a);
+        const cz = Math.sin(a);
+        const pos = new THREE.Vector3(cx * r, y, cz * r);
+        const radial = new THREE.Vector3(cx, 0, cz).normalize();
+        const normal = faceOut ? radial.clone() : radial.clone().multiplyScalar(-1);
+        const tangent = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a)).normalize();
+        const v = ringsY === 1 ? 0 : ring / (ringsY - 1);
+        const w = nested === 1 ? 0 : nest / (nested - 1);
+        items.push(makeItem(i, pos, normal, tangent, ring, k, nest, t, v, w));
+        i++;
+      }
+    }
   }
   return items;
 }
