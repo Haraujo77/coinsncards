@@ -57,6 +57,7 @@ function createJsonFilePicker({ accept = '.json,application/json', onJson }) {
 export function boot() {
   const canvas = document.querySelector('#c');
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Canvas #c not found');
+  canvas.tabIndex = 0;
 
   const toast = createToast();
 
@@ -83,6 +84,105 @@ export function boot() {
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.target.set(state.camera?.targetX ?? 0, state.camera?.targetY ?? 0, state.camera?.targetZ ?? 0);
+
+  // Space + drag moves the composition in screen space; camera stays put.
+  const _panRight = new THREE.Vector3();
+  const _panUp = new THREE.Vector3();
+  const _panFwd = new THREE.Vector3();
+  const spacePan = {
+    down: false,
+    dragging: false,
+    lastX: 0,
+    lastY: 0,
+  };
+  let lastUiSyncMs = 0;
+
+  function isTypingTarget(el) {
+    if (!el || !(el instanceof Element)) return false;
+    const tag = el.tagName;
+    if (tag === 'TEXTAREA') return true;
+    if (tag === 'INPUT') {
+      const type = (el.getAttribute('type') || 'text').toLowerCase();
+      return type !== 'button' && type !== 'checkbox' && type !== 'radio' && type !== 'submit';
+    }
+    return !!el.closest?.('[contenteditable="true"]');
+  }
+
+  function setSpacePan(active) {
+    spacePan.down = active;
+    if (!active) spacePan.dragging = false;
+    controls.enabled = !active;
+    canvas.style.cursor = active ? 'grab' : '';
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space' || e.repeat) return;
+    if (isTypingTarget(document.activeElement)) return;
+    e.preventDefault();
+    setSpacePan(true);
+  });
+  window.addEventListener('keyup', (e) => {
+    if (e.code !== 'Space') return;
+    if (spacePan.down || spacePan.dragging) e.preventDefault();
+    setSpacePan(false);
+  });
+  window.addEventListener('blur', () => setSpacePan(false));
+
+  canvas.addEventListener('pointerdown', (e) => {
+    if (!spacePan.down || e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    spacePan.dragging = true;
+    spacePan.lastX = e.clientX;
+    spacePan.lastY = e.clientY;
+    try { canvas.setPointerCapture(e.pointerId); } catch { /* synthetic / already captured */ }
+    canvas.style.cursor = 'grabbing';
+    skipOrbitSync = true;
+  }, { capture: true });
+
+  canvas.addEventListener('pointermove', (e) => {
+    if (!spacePan.dragging) return;
+    e.preventDefault();
+    const dx = e.clientX - spacePan.lastX;
+    const dy = e.clientY - spacePan.lastY;
+    spacePan.lastX = e.clientX;
+    spacePan.lastY = e.clientY;
+    if (dx === 0 && dy === 0) return;
+
+    camera.getWorldDirection(_panFwd);
+    _panRight.crossVectors(_panFwd, camera.up);
+    if (_panRight.lengthSq() < 1e-10) _panRight.set(1, 0, 0);
+    else _panRight.normalize();
+    _panUp.crossVectors(_panRight, _panFwd).normalize();
+
+    const dist = Math.max(0.01, camera.position.distanceTo(controls.target));
+    const worldPerPx = (2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov) * 0.5))
+      / Math.max(1, canvas.clientHeight);
+    const t = state.transform;
+    t.positionX = (t.positionX ?? 0) + (_panRight.x * dx + _panUp.x * -dy) * worldPerPx;
+    t.positionY = (t.positionY ?? 0) + (_panRight.y * dx + _panUp.y * -dy) * worldPerPx;
+    t.positionZ = (t.positionZ ?? 0) + (_panRight.z * dx + _panUp.z * -dy) * worldPerPx;
+
+    skipOrbitSync = true;
+    if (items.length) updateInstancedMatrices(inst, items, bounds, state, camera, scales);
+    const now = performance.now();
+    if (now - lastUiSyncMs > 60) {
+      ui.refresh?.();
+      lastUiSyncMs = now;
+    }
+  }, { capture: true });
+
+  function endSpaceDrag(e) {
+    if (!spacePan.dragging) return;
+    spacePan.dragging = false;
+    canvas.style.cursor = spacePan.down ? 'grab' : '';
+    if (e?.pointerId != null) {
+      try { canvas.releasePointerCapture(e.pointerId); } catch { /* already released */ }
+    }
+    ui.refresh?.();
+  }
+  canvas.addEventListener('pointerup', endSpaceDrag, { capture: true });
+  canvas.addEventListener('pointercancel', endSpaceDrag, { capture: true });
 
   const key = new THREE.DirectionalLight(0xffffff, 1.25);
   key.position.set(6, 10, 4);
@@ -196,7 +296,7 @@ export function boot() {
     if (requestFrame && bounds) {
       frameComposition();
       requestFrame = false;
-    } else {
+    } else if (!spacePan.dragging) {
       // Mantém target/ângulos consistentes com o state
       applyCameraFromState();
     }
@@ -350,11 +450,11 @@ export function boot() {
     rebuild();
   }
 
-  let lastUiSyncMs = 0;
   renderer.setAnimationLoop(() => {
-    controls.update();
+    const sceneDragging = spacePan.down || spacePan.dragging;
+    if (!sceneDragging) controls.update();
     // Se o usuário arrasta, mantém sliders sincronizados (opcional)
-    if (state.camera?.syncFromOrbit && !skipOrbitSync) {
+    if (state.camera?.syncFromOrbit && !skipOrbitSync && !sceneDragging) {
       captureCameraToState();
       const now = performance.now();
       if (now - lastUiSyncMs > 60) {
@@ -362,7 +462,7 @@ export function boot() {
         lastUiSyncMs = now;
       }
     }
-    skipOrbitSync = false;
+    if (!sceneDragging) skipOrbitSync = false;
     if (dirty) rebuild();
     renderer.render(scene, camera);
   });

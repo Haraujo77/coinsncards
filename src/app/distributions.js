@@ -227,10 +227,23 @@ function genDiagonalRow(state) {
 }
 
 function applyHeroLift(items, d) {
-  const lift = d.heroLift ?? 0;
-  if (!(lift > 0) || items.length === 0) return;
+  const peak = d.heroLift ?? 0;
+  if (!(peak > 0) || items.length === 0) return;
   const idx = Math.max(0, Math.min(items.length - 1, Math.floor(d.heroIndex ?? (items.length * 0.5))));
-  items[idx].pos.y += lift;
+  // Onda = how many tiles on each side rise with the hero (0 = only the hero).
+  const radius = Math.max(0, d.waveAmplitude ?? 0);
+  const n = items.length;
+
+  for (let i = 0; i < n; i++) {
+    const dist = Math.abs(i - idx);
+    let w = 0;
+    if (dist === 0) {
+      w = 1;
+    } else if (radius > 1e-6 && dist < radius) {
+      w = 0.5 * (1 + Math.cos((Math.PI * dist) / radius));
+    }
+    if (w > 1e-6) items[i].pos.y += peak * w;
+  }
 }
 
 /** Horizontal row with sine wave lift — soft marketplace parade. */

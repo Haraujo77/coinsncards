@@ -190,6 +190,9 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   // 6. More — advanced, closed
   const fMore = gui.addFolder('Avançado');
   fMore.add(state.transform, 'scale', 0.05, 10, 0.01).name('Escala global').onChange(onAnyChange);
+  fMore.add(state.transform, 'positionX', -80, 80, 0.01).name('Pos X').onChange(onAnyChange);
+  fMore.add(state.transform, 'positionY', -80, 80, 0.01).name('Pos Y').onChange(onAnyChange);
+  fMore.add(state.transform, 'positionZ', -80, 80, 0.01).name('Pos Z').onChange(onAnyChange);
   degController(fMore, state.transform, 'rotY', 'Rot Y °', -180, 180, 1, onAnyChange);
   fMore.add(state.collision, 'mode', Object.values(CollisionMode)).name('Colisão').onChange(onAnyChange);
   fMore.add(state.export, 'scale', 1, 8, 1).name('Export res').onChange(onAnyChange);

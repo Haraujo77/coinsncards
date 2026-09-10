@@ -211,6 +211,7 @@ export const PRESETS = [
         rowTiltDeg: 0,
         heroIndex: 6,
         heroLift: 0.92,
+        waveAmplitude: 4.2,
       },
       orientation: { mode: OrientationMode.FIXED, extraRotX: 90, extraRotY: 0, extraRotZ: 0, yawDeg: 22 },
       stagger: { enabled: false },
