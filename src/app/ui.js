@@ -132,11 +132,12 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fFan.add(state.distribution, 'fanRadius', 0.4, 20, 0.05).name('Raio leque').onChange(onAnyChange);
 
   const fRow = fLayout.addFolder('Fila');
-  fRow.add(state.distribution, 'rowCount', 1, 64, 1).name('Qtd').onChange(onAnyChange);
+  fRow.add(state.distribution, 'rowCount', 1, 200, 1).name('Qtd').onChange(onAnyChange);
   fRow.add(state.distribution, 'rowSpacing', 0.05, 10, 0.01).name('Espaço').onChange(onAnyChange);
+  fRow.add(state.distribution, 'heroSpacing', 0, 4, 0.01).name('Espaço no pico').onChange(onAnyChange);
   fRow.add(state.distribution, 'rowAngleDeg', -90, 90, 1).name('Ângulo °').onChange(onAnyChange);
   fRow.add(state.distribution, 'waveAmplitude', 0, 8, 0.05).name('Onda').onChange(onAnyChange);
-  fRow.add(state.distribution, 'heroIndex', 0, 32, 1).name('Hero índice').onChange(onAnyChange);
+  fRow.add(state.distribution, 'heroIndex', 0, 199, 1).name('Hero índice').onChange(onAnyChange);
   fRow.add(state.distribution, 'heroLift', 0, 4, 0.01).name('Hero elevação').onChange(onAnyChange);
 
   const fIso = fLayout.addFolder('Grid iso');

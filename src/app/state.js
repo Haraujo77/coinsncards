@@ -214,6 +214,8 @@ export function createDefaultState() {
       heroIndex: 6,
       /** Extra Y lift for the hero tile. 0 = none. */
       heroLift: 0,
+      /** Extra spacing at the hero (0 = uniform). Floor stays at `rowSpacing`. */
+      heroSpacing: 0,
       isoCountX: 5,
       isoCountZ: 4,
       isoSpacingX: 2.4,

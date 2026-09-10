@@ -204,6 +204,17 @@ function genHandFan(state) {
   return items;
 }
 
+function heroWaveWeight(i, heroIndex, radius) {
+  const dist = Math.abs(i - heroIndex);
+  if (dist === 0) return 1;
+  if (!(radius > 1e-6) || dist >= radius) return 0;
+  return 0.5 * (1 + Math.cos((Math.PI * dist) / radius));
+}
+
+function clampedHeroIndex(d, n) {
+  return Math.max(0, Math.min(n - 1, Math.floor(d.heroIndex ?? ((n - 1) * 0.5))));
+}
+
 /** Diagonal shelf / row for marketplace browsing. */
 function genDiagonalRow(state) {
   const d = state.distribution;
@@ -212,12 +223,25 @@ function genDiagonalRow(state) {
   const ang = THREE.MathUtils.degToRad(d.rowAngleDeg ?? 35);
   const tilt = THREE.MathUtils.degToRad(d.rowTiltDeg ?? 12);
   const dir = new THREE.Vector3(Math.cos(ang), Math.sin(tilt) * 0.35, Math.sin(ang)).normalize();
-  const c = (n - 1) * 0.5;
+  const idx = clampedHeroIndex(d, n);
+  const radius = Math.max(0, d.waveAmplitude ?? 0);
+  const boost = Math.max(0, d.heroSpacing ?? 0);
   const items = [];
+
+  const along = new Array(n);
+  let acc = 0;
+  for (let i = 0; i < n; i++) {
+    along[i] = acc;
+    if (i < n - 1) {
+      const w = 0.5 * (heroWaveWeight(i, idx, radius) + heroWaveWeight(i + 1, idx, radius));
+      acc += sp * (1 + boost * w);
+    }
+  }
+  const mid = acc * 0.5;
 
   for (let i = 0; i < n; i++) {
     const t = n === 1 ? 0.5 : i / (n - 1);
-    const pos = dir.clone().multiplyScalar((i - c) * sp);
+    const pos = dir.clone().multiplyScalar(along[i] - mid);
     const normal = new THREE.Vector3(0, 0, 1);
     const tangent = dir.clone();
     items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
@@ -229,19 +253,12 @@ function genDiagonalRow(state) {
 function applyHeroLift(items, d) {
   const peak = d.heroLift ?? 0;
   if (!(peak > 0) || items.length === 0) return;
-  const idx = Math.max(0, Math.min(items.length - 1, Math.floor(d.heroIndex ?? (items.length * 0.5))));
-  // Onda = how many tiles on each side rise with the hero (0 = only the hero).
-  const radius = Math.max(0, d.waveAmplitude ?? 0);
   const n = items.length;
+  const idx = clampedHeroIndex(d, n);
+  const radius = Math.max(0, d.waveAmplitude ?? 0);
 
   for (let i = 0; i < n; i++) {
-    const dist = Math.abs(i - idx);
-    let w = 0;
-    if (dist === 0) {
-      w = 1;
-    } else if (radius > 1e-6 && dist < radius) {
-      w = 0.5 * (1 + Math.cos((Math.PI * dist) / radius));
-    }
+    const w = heroWaveWeight(i, idx, radius);
     if (w > 1e-6) items[i].pos.y += peak * w;
   }
 }
