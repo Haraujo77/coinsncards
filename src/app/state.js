@@ -19,6 +19,8 @@ export const DistributionType = Object.freeze({
   CAROUSEL: 'carousel',
   COVERFLOW: 'coverflow',
   FAN: 'fan',
+  /** Hand of cards: tight arc in XZ, each tile yawed to the fan. */
+  HAND_FAN: 'handFan',
   DIAGONAL_ROW: 'diagonalRow',
   WAVE_ROW: 'waveRow',
   /** Staggered isometric floor grid (marketplace tiles). */
@@ -202,10 +204,16 @@ export function createDefaultState() {
       fanSpacing: 0.55,
       fanDepth: 0.18,
       fanScaleFalloff: 0.04,
+      fanSpreadDeg: 72,
+      fanRadius: 3.4,
       rowCount: 12,
       rowSpacing: 1.35,
       rowAngleDeg: 35,
       rowTiltDeg: 12,
+      /** Index of the popped tile (hero) in a row. */
+      heroIndex: 6,
+      /** Extra Y lift for the hero tile. 0 = none. */
+      heroLift: 0,
       isoCountX: 5,
       isoCountZ: 4,
       isoSpacingX: 2.4,

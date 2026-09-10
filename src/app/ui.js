@@ -74,6 +74,7 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
     'Carousel': DistributionType.CAROUSEL,
     'Coverflow': DistributionType.COVERFLOW,
     'Fan': DistributionType.FAN,
+    'Leque': DistributionType.HAND_FAN,
     'Prateleira': DistributionType.DIAGONAL_ROW,
     'Onda': DistributionType.WAVE_ROW,
     'Grid iso': DistributionType.ISO_GRID,
@@ -127,12 +128,16 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fFan.add(state.distribution, 'fanCount', 1, 64, 1).name('Qtd').onChange(onAnyChange);
   fFan.add(state.distribution, 'fanSpacing', 0.05, 5, 0.01).name('Espaço').onChange(onAnyChange);
   fFan.add(state.distribution, 'fanDepth', 0, 2, 0.01).name('Profundidade').onChange(onAnyChange);
+  fFan.add(state.distribution, 'fanSpreadDeg', 10, 180, 1).name('Abertura °').onChange(onAnyChange);
+  fFan.add(state.distribution, 'fanRadius', 0.4, 20, 0.05).name('Raio leque').onChange(onAnyChange);
 
   const fRow = fLayout.addFolder('Fila');
   fRow.add(state.distribution, 'rowCount', 1, 64, 1).name('Qtd').onChange(onAnyChange);
-  fRow.add(state.distribution, 'rowSpacing', 0.1, 10, 0.01).name('Espaço').onChange(onAnyChange);
+  fRow.add(state.distribution, 'rowSpacing', 0.05, 10, 0.01).name('Espaço').onChange(onAnyChange);
   fRow.add(state.distribution, 'rowAngleDeg', -90, 90, 1).name('Ângulo °').onChange(onAnyChange);
   fRow.add(state.distribution, 'waveAmplitude', 0, 8, 0.05).name('Onda').onChange(onAnyChange);
+  fRow.add(state.distribution, 'heroIndex', 0, 32, 1).name('Hero índice').onChange(onAnyChange);
+  fRow.add(state.distribution, 'heroLift', 0, 4, 0.01).name('Hero elevação').onChange(onAnyChange);
 
   const fIso = fLayout.addFolder('Grid iso');
   fIso.add(state.distribution, 'isoCountX', 1, 24, 1).name('Qtd X').onChange(onAnyChange);
@@ -205,7 +210,7 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
     setFolderVisible(fColumn, type === DistributionType.COLUMN);
     setFolderVisible(fCarousel, type === DistributionType.CAROUSEL);
     setFolderVisible(fCoverflow, type === DistributionType.COVERFLOW);
-    setFolderVisible(fFan, type === DistributionType.FAN);
+    setFolderVisible(fFan, type === DistributionType.FAN || type === DistributionType.HAND_FAN);
     setFolderVisible(fRow, type === DistributionType.DIAGONAL_ROW || type === DistributionType.WAVE_ROW);
     setFolderVisible(fIso, type === DistributionType.ISO_GRID);
     setFolderVisible(

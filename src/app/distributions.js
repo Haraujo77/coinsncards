@@ -33,6 +33,8 @@ export function generateDistribution(state) {
       return genCoverflow(state);
     case DistributionType.FAN:
       return genFan(state);
+    case DistributionType.HAND_FAN:
+      return genHandFan(state);
     case DistributionType.DIAGONAL_ROW:
       return genDiagonalRow(state);
     case DistributionType.WAVE_ROW:
@@ -177,6 +179,31 @@ function genFan(state) {
   return items;
 }
 
+/**
+ * Hand-of-cards / edge fan: tiles on a tight arc in XZ, each facing along the radius.
+ * Camera from one end reads as a receding stack of faces (Pinterest / Cosmos card spread).
+ */
+function genHandFan(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.fanCount ?? d.coverflowCount ?? 12));
+  const r = Math.max(1e-6, d.fanRadius ?? d.coverflowRadius ?? 3.4);
+  const spread = THREE.MathUtils.degToRad(d.fanSpreadDeg ?? d.coverflowSpreadDeg ?? 72);
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0.5 : i / (n - 1);
+    const a = -spread * 0.5 + t * spread;
+    const x = Math.sin(a) * r;
+    const z = (1 - Math.cos(a)) * r;
+    const pos = new THREE.Vector3(x, 0, z);
+    const normal = new THREE.Vector3(Math.sin(a), 0, Math.cos(a)).normalize();
+    const tangent = new THREE.Vector3(Math.cos(a), 0, -Math.sin(a)).normalize();
+    items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
+  }
+  applyHeroLift(items, d);
+  return items;
+}
+
 /** Diagonal shelf / row for marketplace browsing. */
 function genDiagonalRow(state) {
   const d = state.distribution;
@@ -195,7 +222,15 @@ function genDiagonalRow(state) {
     const tangent = dir.clone();
     items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
   }
+  applyHeroLift(items, d);
   return items;
+}
+
+function applyHeroLift(items, d) {
+  const lift = d.heroLift ?? 0;
+  if (!(lift > 0) || items.length === 0) return;
+  const idx = Math.max(0, Math.min(items.length - 1, Math.floor(d.heroIndex ?? (items.length * 0.5))));
+  items[idx].pos.y += lift;
 }
 
 /** Horizontal row with sine wave lift — soft marketplace parade. */
@@ -217,6 +252,7 @@ function genWaveRow(state) {
     const tangent = new THREE.Vector3(1, 0, 0);
     items.push(makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0));
   }
+  applyHeroLift(items, d);
   return items;
 }
 
