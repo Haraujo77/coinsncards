@@ -25,6 +25,16 @@ export const DistributionType = Object.freeze({
   WAVE_ROW: 'waveRow',
   /** Staggered isometric floor grid (marketplace tiles). */
   ISO_GRID: 'isoGrid',
+  /** Strict isometric diagonal with progressive explode / dismantle. */
+  ISO_BREAKDOWN: 'isoBreakdown',
+  /** Golden-ratio logarithmic spiral that scales into a vortex. */
+  GOLDEN_VORTEX: 'goldenVortex',
+  /** Frozen mid-air tumble / cascade. */
+  CASCADE: 'cascade',
+  /** Tight matrix with a single anomaly. */
+  GLITCH_GRID: 'glitchGrid',
+  /** Overlapping pack that reads as one macro silhouette. */
+  SILHOUETTE: 'silhouette',
 });
 
 export const ObjectType = Object.freeze({
@@ -214,7 +224,7 @@ export function createDefaultState() {
       heroIndex: 6,
       /** Height of the organic weave bump (eased in/out around the hero). */
       heroLift: 0,
-      /** Extra Y + gap for the hero only, so it reads clear of the weave. */
+      /** Extra Y lift for the hero only, so it reads clear of the weave. */
       heroDetach: 0,
       /** Extra spacing at the hero (0 = uniform). Floor stays at `rowSpacing`. */
       heroSpacing: 0,
@@ -225,6 +235,36 @@ export function createDefaultState() {
       isoRowOffset: 0.5,
       waveAmplitude: 1.2,
       waveLength: 1.0,
+
+      breakdownCount: 9,
+      breakdownSpacing: 1.55,
+      breakdownAngleDeg: 45,
+      breakdownExplode: 0.55,
+      breakdownTwistDeg: 26,
+
+      vortexCount: 72,
+      vortexRadius: 9,
+      vortexTurns: 3.4,
+      vortexScaleIn: 0.12,
+      vortexDepth: 2.4,
+
+      cascadeCount: 32,
+      cascadeHeight: 16,
+      cascadeSpread: 2.6,
+      cascadeDrift: 1.5,
+
+      glitchCountX: 11,
+      glitchCountZ: 11,
+      glitchSpacing: 1.08,
+      glitchIndex: 47,
+      glitchRotDeg: 48,
+      glitchLift: 0.62,
+
+      silCount: 280,
+      silRadius: 5.2,
+      silOverlap: 0.48,
+      silPower: 4,
+      silStack: 0.12,
 
       // sphere
       sphereRadius: 9,

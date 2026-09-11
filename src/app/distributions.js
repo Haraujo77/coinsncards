@@ -41,6 +41,16 @@ export function generateDistribution(state) {
       return genWaveRow(state);
     case DistributionType.ISO_GRID:
       return genIsoGrid(state);
+    case DistributionType.ISO_BREAKDOWN:
+      return genIsoBreakdown(state);
+    case DistributionType.GOLDEN_VORTEX:
+      return genGoldenVortex(state);
+    case DistributionType.CASCADE:
+      return genCascade(state);
+    case DistributionType.GLITCH_GRID:
+      return genGlitchGrid(state);
+    case DistributionType.SILHOUETTE:
+      return genSilhouette(state);
     case DistributionType.CUBE:
       return genCube(state);
     case DistributionType.SPHERE:
@@ -232,7 +242,6 @@ function genDiagonalRow(state) {
   const idx = clampedHeroIndex(d, n);
   const radius = Math.max(0, d.waveAmplitude ?? 0);
   const boost = Math.max(0, d.heroSpacing ?? 0);
-  const detach = Math.max(0, d.heroDetach ?? 0);
   const items = [];
 
   const along = new Array(n);
@@ -241,8 +250,7 @@ function genDiagonalRow(state) {
     along[i] = acc;
     if (i < n - 1) {
       const w = 0.5 * (heroWaveWeight(i, idx, radius) + heroWaveWeight(i + 1, idx, radius));
-      const nextToHero = i === idx || i + 1 === idx;
-      acc += sp * (1 + boost * w) + (nextToHero ? detach * 0.82 : 0);
+      acc += sp * (1 + boost * w);
     }
   }
   const mid = acc * 0.5;
@@ -271,8 +279,6 @@ function applyHeroLift(items, d) {
     if (peak > 0 && w > 1e-6) items[i].pos.y += peak * w;
     if (i === idx && detach > 0) {
       items[i].pos.y += detach;
-      items[i].pos.addScaledVector(items[i].normal, detach * 0.78);
-      items[i].heroScale = 1 + Math.min(0.2, detach * 0.16);
     }
   }
 }
@@ -721,6 +727,180 @@ function genTorus(state) {
     items.push(makeItem(i, pos, normal, tangent, 0, i, 0, u, 0, 0));
   }
   return items;
+}
+
+function pieceSize(state) {
+  const type = state.object?.type;
+  if (type === 'card') return Math.max(state.card?.width ?? 1, state.card?.height ?? 1);
+  if (type === 'icon') return state.icon?.size ?? 1;
+  return state.disc?.diameter ?? 1;
+}
+
+/**
+ * Strict isometric diagonal: each step is more exploded / rotated than the last
+ * (technical breakdown / exploded-view blueprint).
+ */
+function genIsoBreakdown(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.breakdownCount ?? 9));
+  const sp = Math.max(1e-6, d.breakdownSpacing ?? 1.55);
+  const ang = THREE.MathUtils.degToRad(d.breakdownAngleDeg ?? 45);
+  const explode = d.breakdownExplode ?? 0.55;
+  const twist = d.breakdownTwistDeg ?? 26;
+  const dir = new THREE.Vector3(Math.cos(ang), 0, Math.sin(ang)).normalize();
+  const side = new THREE.Vector3(-dir.z, 0, dir.x);
+  const c = (n - 1) * 0.5;
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0 : i / (n - 1);
+    const along = (i - c) * sp;
+    const pos = dir.clone().multiplyScalar(along);
+    pos.y += t * explode * 2.8;
+    pos.addScaledVector(side, t * explode * 2.15);
+    const normal = new THREE.Vector3(0, 0, 1);
+    const tangent = dir.clone();
+    const item = makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0);
+    item.itemRotX = t * twist * 0.55;
+    item.itemRotY = t * twist;
+    item.itemRotZ = t * twist * 0.22;
+    items.push(item);
+  }
+  return items;
+}
+
+/**
+ * Logarithmic golden spiral: scale and yaw tighten toward the center (shell / galaxy vortex).
+ */
+function genGoldenVortex(state) {
+  const d = state.distribution;
+  const n = Math.max(2, Math.floor(d.vortexCount ?? 72));
+  const rMax = Math.max(0.2, d.vortexRadius ?? 9);
+  const turns = Math.max(0.25, d.vortexTurns ?? 3.4);
+  const scaleIn = Math.max(0.02, d.vortexScaleIn ?? 0.12);
+  const depth = d.vortexDepth ?? 2.4;
+  const phi = (1 + Math.sqrt(5)) / 2;
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = i / (n - 1);
+    const a = t * Math.PI * 2 * turns;
+    const r = rMax * Math.pow(phi, -t * turns);
+    const x = Math.cos(a) * r;
+    const z = Math.sin(a) * r;
+    const y = -t * depth;
+    const pos = new THREE.Vector3(x, y, z);
+    const radial = new THREE.Vector3(x, 0, z);
+    const normal = radial.lengthSq() < 1e-8 ? new THREE.Vector3(0, 0, 1) : radial.clone().normalize();
+    const tangent = new THREE.Vector3(-Math.sin(a), 0, Math.cos(a)).normalize();
+    const item = makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, r / rMax);
+    item.itemScale = THREE.MathUtils.lerp(1, scaleIn, t);
+    item.itemRotY = t * 110;
+    items.push(item);
+  }
+  return items;
+}
+
+/** Suspended tumble: identical pieces, chaotic orientation, frozen in a downward fall. */
+function genCascade(state) {
+  const d = state.distribution;
+  const n = Math.max(1, Math.floor(d.cascadeCount ?? 32));
+  const h = Math.max(0.5, d.cascadeHeight ?? 16);
+  const spread = Math.max(0, d.cascadeSpread ?? 2.6);
+  const drift = d.cascadeDrift ?? 1.5;
+  const rng = createRng(d.seed ?? 1);
+  const items = [];
+
+  for (let i = 0; i < n; i++) {
+    const t = n === 1 ? 0.5 : i / (n - 1);
+    const y = (0.5 - t) * h;
+    const flare = 0.18 + t * t;
+    const x = (rng() * 2 - 1) * spread * flare;
+    const z = (rng() * 2 - 1) * spread * flare * 0.65 + t * drift;
+    const pos = new THREE.Vector3(x, y, z);
+    const normal = new THREE.Vector3(0, 0, 1);
+    const tangent = new THREE.Vector3(1, 0, 0);
+    const item = makeItem(i, pos, normal, tangent, 0, i, 0, t, 0, 0);
+    item.itemRotX = (rng() * 2 - 1) * 180;
+    item.itemRotY = (rng() * 2 - 1) * 180;
+    item.itemRotZ = (rng() * 2 - 1) * 180;
+    items.push(item);
+  }
+  return items;
+}
+
+/** Tight packed matrix with exactly one rotated / tinted / lifted anomaly. */
+function genGlitchGrid(state) {
+  const d = state.distribution;
+  const nx = Math.max(1, Math.floor(d.glitchCountX ?? 11));
+  const nz = Math.max(1, Math.floor(d.glitchCountZ ?? 11));
+  const sp = Math.max(1e-6, d.glitchSpacing ?? 1.08);
+  const n = nx * nz;
+  const idx = Math.max(0, Math.min(n - 1, Math.floor(d.glitchIndex ?? Math.floor(n * 0.37))));
+  const rot = d.glitchRotDeg ?? 48;
+  const lift = d.glitchLift ?? 0.62;
+  const cx = (nx - 1) * 0.5;
+  const cz = (nz - 1) * 0.5;
+  const items = [];
+  let i = 0;
+
+  for (let z = 0; z < nz; z++) {
+    for (let x = 0; x < nx; x++) {
+      const pos = new THREE.Vector3((x - cx) * sp, 0, (z - cz) * sp);
+      const normal = new THREE.Vector3(0, 0, 1);
+      const tangent = new THREE.Vector3(1, 0, 0);
+      const u = nx === 1 ? 0.5 : x / (nx - 1);
+      const w = nz === 1 ? 0.5 : z / (nz - 1);
+      const item = makeItem(i, pos, normal, tangent, z, x, 0, u, 0, w);
+      if (i === idx) {
+        item.pos.y += lift;
+        item.itemRotY = rot;
+        item.itemRotZ = rot * 0.28;
+        item.itemScale = 1.08;
+        item.itemColor = 0x7eb6ff;
+      }
+      items.push(item);
+      i++;
+    }
+  }
+  return items;
+}
+
+/**
+ * Dense overlapping pack clipped to a circle or squircle so the field reads as one
+ * macro-shape from afar, and as hundreds of tiles up close.
+ */
+function genSilhouette(state) {
+  const d = state.distribution;
+  const maxN = Math.max(1, Math.floor(d.silCount ?? 400));
+  const R = Math.max(0.4, d.silRadius ?? 5.2);
+  const overlap = Math.max(0, Math.min(0.85, d.silOverlap ?? 0.48));
+  const power = Math.max(2, d.silPower ?? 4);
+  const stack = Math.max(0, d.silStack ?? 0.12);
+  const size = pieceSize(state);
+  const sp = Math.max(0.12, size * (1 - overlap));
+  const rng = createRng(d.seed ?? 1);
+  const items = [];
+  const hexZ = sp * Math.sqrt(3) * 0.5;
+  const extent = R + sp;
+  let row = 0;
+
+  for (let z = -extent; z <= extent + 1e-6 && items.length < maxN; z += hexZ, row++) {
+    const ox = (row % 2 === 0 ? 0 : sp * 0.5);
+    for (let x = -extent + ox; x <= extent + 1e-6 && items.length < maxN; x += sp) {
+      const nx = x / R;
+      const nz = z / R;
+      if (Math.pow(Math.abs(nx), power) + Math.pow(Math.abs(nz), power) > 1.02) continue;
+      const pos = new THREE.Vector3(x, (rng() - 0.5) * stack * 2, z);
+      const u = items.length / Math.max(1, maxN - 1);
+      items.push(makeItem(items.length, pos, new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0), row, items.length, 0, u, 0, 0));
+    }
+  }
+
+  if (items.length === 0) {
+    items.push(makeItem(0, new THREE.Vector3(), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0)));
+  }
+  return normalizeItemPositions(items);
 }
 
 export function distributionBounds(items) {

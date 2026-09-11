@@ -78,6 +78,11 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
     'Prateleira': DistributionType.DIAGONAL_ROW,
     'Onda': DistributionType.WAVE_ROW,
     'Grid iso': DistributionType.ISO_GRID,
+    'Explodido iso': DistributionType.ISO_BREAKDOWN,
+    'Vórtice': DistributionType.GOLDEN_VORTEX,
+    'Queda': DistributionType.CASCADE,
+    'Grid glitch': DistributionType.GLITCH_GRID,
+    'Silhueta': DistributionType.SILHOUETTE,
     'Grid': DistributionType.GRID,
     'Círculo': DistributionType.CIRCLE,
     'Anel': DistributionType.RING,
@@ -147,6 +152,41 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fIso.add(state.distribution, 'isoSpacingX', 0.2, 12, 0.05).name('Espaço X').onChange(onAnyChange);
   fIso.add(state.distribution, 'isoSpacingZ', 0.2, 12, 0.05).name('Espaço Z').onChange(onAnyChange);
   fIso.add(state.distribution, 'isoRowOffset', 0, 1, 0.01).name('Offset linha').onChange(onAnyChange);
+
+  const fBreak = fLayout.addFolder('Explodido');
+  fBreak.add(state.distribution, 'breakdownCount', 2, 48, 1).name('Qtd').onChange(onAnyChange);
+  fBreak.add(state.distribution, 'breakdownSpacing', 0.2, 8, 0.01).name('Espaço').onChange(onAnyChange);
+  fBreak.add(state.distribution, 'breakdownAngleDeg', 0, 90, 1).name('Eixo °').onChange(onAnyChange);
+  fBreak.add(state.distribution, 'breakdownExplode', 0, 3, 0.01).name('Explosão').onChange(onAnyChange);
+  fBreak.add(state.distribution, 'breakdownTwistDeg', 0, 120, 1).name('Desmonte °').onChange(onAnyChange);
+
+  const fVortex = fLayout.addFolder('Vórtice');
+  fVortex.add(state.distribution, 'vortexCount', 8, 240, 1).name('Qtd').onChange(onAnyChange);
+  fVortex.add(state.distribution, 'vortexRadius', 0.5, 24, 0.05).name('Raio').onChange(onAnyChange);
+  fVortex.add(state.distribution, 'vortexTurns', 0.5, 8, 0.05).name('Voltas').onChange(onAnyChange);
+  fVortex.add(state.distribution, 'vortexScaleIn', 0.02, 1, 0.01).name('Escala centro').onChange(onAnyChange);
+  fVortex.add(state.distribution, 'vortexDepth', 0, 8, 0.05).name('Poço Y').onChange(onAnyChange);
+
+  const fCascade = fLayout.addFolder('Queda');
+  fCascade.add(state.distribution, 'cascadeCount', 4, 120, 1).name('Qtd').onChange(onAnyChange);
+  fCascade.add(state.distribution, 'cascadeHeight', 2, 40, 0.1).name('Altura').onChange(onAnyChange);
+  fCascade.add(state.distribution, 'cascadeSpread', 0, 10, 0.05).name('Abertura').onChange(onAnyChange);
+  fCascade.add(state.distribution, 'cascadeDrift', 0, 8, 0.05).name('Deriva Z').onChange(onAnyChange);
+
+  const fGlitch = fLayout.addFolder('Glitch');
+  fGlitch.add(state.distribution, 'glitchCountX', 1, 24, 1).name('Qtd X').onChange(onAnyChange);
+  fGlitch.add(state.distribution, 'glitchCountZ', 1, 24, 1).name('Qtd Z').onChange(onAnyChange);
+  fGlitch.add(state.distribution, 'glitchSpacing', 0.2, 6, 0.01).name('Espaço').onChange(onAnyChange);
+  fGlitch.add(state.distribution, 'glitchIndex', 0, 575, 1).name('Índice').onChange(onAnyChange);
+  fGlitch.add(state.distribution, 'glitchRotDeg', -180, 180, 1).name('Giro °').onChange(onAnyChange);
+  fGlitch.add(state.distribution, 'glitchLift', 0, 4, 0.01).name('Elevação').onChange(onAnyChange);
+
+  const fSil = fLayout.addFolder('Silhueta');
+  fSil.add(state.distribution, 'silCount', 8, 600, 1).name('Qtd máx').onChange(onAnyChange);
+  fSil.add(state.distribution, 'silRadius', 0.5, 16, 0.05).name('Raio').onChange(onAnyChange);
+  fSil.add(state.distribution, 'silOverlap', 0, 0.85, 0.01).name('Sobreposição').onChange(onAnyChange);
+  fSil.add(state.distribution, 'silPower', 2, 8, 0.1).name('Squircle').onChange(onAnyChange);
+  fSil.add(state.distribution, 'silStack', 0, 1.5, 0.01).name('Empilhamento').onChange(onAnyChange);
 
   const fGrid = fLayout.addFolder('Grid / cubo');
   fGrid.add(state.distribution, 'countX', 1, 80, 1).name('Qtd X').onChange(onAnyChange);
@@ -218,6 +258,11 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
     setFolderVisible(fFan, type === DistributionType.FAN || type === DistributionType.HAND_FAN);
     setFolderVisible(fRow, type === DistributionType.DIAGONAL_ROW || type === DistributionType.WAVE_ROW);
     setFolderVisible(fIso, type === DistributionType.ISO_GRID);
+    setFolderVisible(fBreak, type === DistributionType.ISO_BREAKDOWN);
+    setFolderVisible(fVortex, type === DistributionType.GOLDEN_VORTEX);
+    setFolderVisible(fCascade, type === DistributionType.CASCADE);
+    setFolderVisible(fGlitch, type === DistributionType.GLITCH_GRID);
+    setFolderVisible(fSil, type === DistributionType.SILHOUETTE);
     setFolderVisible(
       fGrid,
       type === DistributionType.GRID ||

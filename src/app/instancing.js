@@ -13,6 +13,7 @@ const _look = new THREE.Matrix4();
 const _zAxis = new THREE.Vector3(0, 0, 1);
 const _yAxis = new THREE.Vector3(0, 1, 0);
 const _fwd = new THREE.Vector3();
+const _col = new THREE.Color();
 
 function directionOrFallback(dir, fallback) {
   const l2 = dir.lengthSq();
@@ -220,8 +221,20 @@ export function updateInstancedMatrices(inst, items, bounds, state, camera, scal
 
     // Per-instance scale: unit disc scaled to diameter/thickness
     const sc = scales?.[i] ?? { sx: disc.diameter, sy: disc.thickness, sz: disc.diameter };
-    const hs = item.heroScale ?? 1;
+    const hs = (item.heroScale ?? 1) * (item.itemScale ?? 1);
     _s.set(sc.sx * hs, sc.sy * hs, sc.sz * hs);
+
+    if (item.itemRotX || item.itemRotY || item.itemRotZ) {
+      _q2.setFromEuler(
+        new THREE.Euler(
+          THREE.MathUtils.degToRad(item.itemRotX ?? 0),
+          THREE.MathUtils.degToRad(item.itemRotY ?? 0),
+          THREE.MathUtils.degToRad(item.itemRotZ ?? 0),
+          'XYZ',
+        ),
+      );
+      qBase.multiply(_q2);
+    }
 
     _pos.copy(item.pos).multiply(globalS).applyQuaternion(globalQ).add(globalP);
     _q.copy(qBase).premultiply(globalQ);
@@ -233,5 +246,22 @@ export function updateInstancedMatrices(inst, items, bounds, state, camera, scal
 
   inst.solid.instanceMatrix.needsUpdate = true;
   inst.outline.instanceMatrix.needsUpdate = true;
+  paintInstanceColors(inst, items);
+}
+
+function paintInstanceColors(inst, items) {
+  let painted = false;
+  for (const it of items) {
+    if (it.itemColor != null) {
+      painted = true;
+      break;
+    }
+  }
+  if (!painted && !inst.solid.instanceColor) return;
+  for (let i = 0; i < items.length; i++) {
+    _col.set(items[i].itemColor ?? 0xffffff);
+    inst.solid.setColorAt(i, _col);
+  }
+  if (inst.solid.instanceColor) inst.solid.instanceColor.needsUpdate = true;
 }
 
