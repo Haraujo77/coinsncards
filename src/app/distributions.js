@@ -204,11 +204,17 @@ function genHandFan(state) {
   return items;
 }
 
+function easeInOutCubic(t) {
+  const x = Math.max(0, Math.min(1, t));
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+}
+
+/** Ease-in-out bump: 1 at the hero, 0 at `radius` tiles away. */
 function heroWaveWeight(i, heroIndex, radius) {
   const dist = Math.abs(i - heroIndex);
   if (dist === 0) return 1;
   if (!(radius > 1e-6) || dist >= radius) return 0;
-  return 0.5 * (1 + Math.cos((Math.PI * dist) / radius));
+  return easeInOutCubic(1 - dist / radius);
 }
 
 function clampedHeroIndex(d, n) {
@@ -226,6 +232,7 @@ function genDiagonalRow(state) {
   const idx = clampedHeroIndex(d, n);
   const radius = Math.max(0, d.waveAmplitude ?? 0);
   const boost = Math.max(0, d.heroSpacing ?? 0);
+  const detach = Math.max(0, d.heroDetach ?? 0);
   const items = [];
 
   const along = new Array(n);
@@ -234,7 +241,8 @@ function genDiagonalRow(state) {
     along[i] = acc;
     if (i < n - 1) {
       const w = 0.5 * (heroWaveWeight(i, idx, radius) + heroWaveWeight(i + 1, idx, radius));
-      acc += sp * (1 + boost * w);
+      const nextToHero = i === idx || i + 1 === idx;
+      acc += sp * (1 + boost * w) + (nextToHero ? detach * 0.82 : 0);
     }
   }
   const mid = acc * 0.5;
@@ -252,14 +260,20 @@ function genDiagonalRow(state) {
 
 function applyHeroLift(items, d) {
   const peak = d.heroLift ?? 0;
-  if (!(peak > 0) || items.length === 0) return;
+  const detach = d.heroDetach ?? 0;
+  if ((!(peak > 0) && !(detach > 0)) || items.length === 0) return;
   const n = items.length;
   const idx = clampedHeroIndex(d, n);
   const radius = Math.max(0, d.waveAmplitude ?? 0);
 
   for (let i = 0; i < n; i++) {
     const w = heroWaveWeight(i, idx, radius);
-    if (w > 1e-6) items[i].pos.y += peak * w;
+    if (peak > 0 && w > 1e-6) items[i].pos.y += peak * w;
+    if (i === idx && detach > 0) {
+      items[i].pos.y += detach;
+      items[i].pos.addScaledVector(items[i].normal, detach * 0.78);
+      items[i].heroScale = 1 + Math.min(0.2, detach * 0.16);
+    }
   }
 }
 

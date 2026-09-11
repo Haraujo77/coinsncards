@@ -220,7 +220,8 @@ export function updateInstancedMatrices(inst, items, bounds, state, camera, scal
 
     // Per-instance scale: unit disc scaled to diameter/thickness
     const sc = scales?.[i] ?? { sx: disc.diameter, sy: disc.thickness, sz: disc.diameter };
-    _s.set(sc.sx, sc.sy, sc.sz);
+    const hs = item.heroScale ?? 1;
+    _s.set(sc.sx * hs, sc.sy * hs, sc.sz * hs);
 
     _pos.copy(item.pos).multiply(globalS).applyQuaternion(globalQ).add(globalP);
     _q.copy(qBase).premultiply(globalQ);

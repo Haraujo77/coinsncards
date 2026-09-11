@@ -212,8 +212,10 @@ export function createDefaultState() {
       rowTiltDeg: 12,
       /** Index of the popped tile (hero) in a row. */
       heroIndex: 6,
-      /** Extra Y lift for the hero tile. 0 = none. */
+      /** Height of the organic weave bump (eased in/out around the hero). */
       heroLift: 0,
+      /** Extra Y + gap for the hero only, so it reads clear of the weave. */
+      heroDetach: 0,
       /** Extra spacing at the hero (0 = uniform). Floor stays at `rowSpacing`. */
       heroSpacing: 0,
       isoCountX: 5,
