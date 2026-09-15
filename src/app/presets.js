@@ -676,7 +676,7 @@ export const PRESETS = [
         rotZ: 0,
       },
       render: { background: '#000000' },
-      camera: shot(38, 50, 15.5, 0.7, 1.45, 1.15),
+      camera: shot(15.3, 41.03, 15.5, 0.7, 1.45, 1.15),
     },
   },
   {

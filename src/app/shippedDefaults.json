@@ -172,8 +172,8 @@
     "camera": {
       "lockFraming": true,
       "syncFromOrbit": true,
-      "azimuthDeg": 38,
-      "polarDeg": 50,
+      "azimuthDeg": 15.3,
+      "polarDeg": 41.03,
       "distance": 15.5,
       "targetX": 0.7,
       "targetY": 1.45,
