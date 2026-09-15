@@ -7,6 +7,7 @@ import {
   CollisionMode,
 } from './state.js';
 import { getPresetOverride } from './presetDefaults.js';
+import shippedDefaults from './shippedDefaults.json';
 
 const N = 36;
 
@@ -655,6 +656,7 @@ export const PRESETS = [
       icon: { size: 1.05, thickness: 0.11, cornerRadius: 0.2, segments: 8 },
       distribution: {
         type: DistributionType.ISO_GRID,
+        fillMode: FillMode.OUTLINE,
         isoCountX: 4,
         isoCountZ: 3,
         isoSpacingX: 2.75,
@@ -1005,6 +1007,8 @@ export function getPresetByName(name) {
   const key = canonicalPresetName(name);
   const base = PRESETS.find((p) => p.name === key) ?? PRESETS[0];
   const factory = JSON.parse(JSON.stringify(base.state));
+  const shipped = shippedDefaults[base.name];
+  if (shipped) deepMerge(factory, shipped);
   const override =
     getPresetOverride(base.name) ||
     Object.entries(PRESET_ALIASES)
