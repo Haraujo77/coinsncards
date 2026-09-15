@@ -1,7 +1,17 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
-// GitHub Pages serves the site from /<repo>/
+const root = fileURLToPath(new URL('.', import.meta.url));
+
 export default defineConfig({
   base: '/coinsncards/',
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': path.resolve(root, 'src'),
+    },
+  },
 });
-

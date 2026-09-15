@@ -14,7 +14,7 @@ export async function exportHighResPng({ renderer, scene, camera, scale = 2, fil
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) {
-    toast?.('Falha ao exportar PNG (toBlob retornou null).');
+    toast?.('PNG export failed.');
     // restore
     renderer.setClearAlpha(prevClearAlpha);
     renderer.setPixelRatio(prevPixelRatio);
@@ -36,7 +36,7 @@ export async function exportHighResPng({ renderer, scene, camera, scale = 2, fil
   renderer.setPixelRatio(prevPixelRatio);
   renderer.setSize(w, h, false);
 
-  toast?.(`Exportado: ${filename} (${scale}x)`);
+  toast?.(`Exported ${filename} (${scale}×)`);
   return true;
 }
 

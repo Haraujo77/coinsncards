@@ -1,0 +1,204 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Brand faces belong to the ARTBOARD, not the chrome. Licensed — Martina
+   Plantijn (Klim) and Capsule Sans (proprietary) come from the brand team,
+   never a public CDN. Served locally so the device renders on-brand offline.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Martina Plantijn";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/MartinaPlantijn-Regular.woff") format("woff");
+  font-display: block;
+}
+@font-face {
+  font-family: "Capsule Sans Text";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/CapsuleSansText-Book.woff") format("woff");
+  font-display: block;
+}
+@font-face {
+  font-family: "Capsule Sans Text";
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/CapsuleSansText-Medium.woff") format("woff");
+  font-display: block;
+}
+
+/* ---------------------------------------------------------------------------
+   Theme. Raw values live in :root / :root.light as plain CSS vars; @theme
+   inline then maps them to Tailwind utilities *by reference*, so flipping one
+   class on <html> reflows the whole palette at runtime. A non-inline @theme
+   would bake the hex into every utility and could not be themed.
+
+   The chrome is deliberately neutral in both themes — a generic tool shell is
+   what lets the artboard's own brand read truthfully.
+--------------------------------------------------------------------------- */
+:root {
+  --field: #131313;         /* the surface everything floats on */
+  --panel: #1e1e1e;         /* floating cards, ~5% step off the field */
+  /* Three distinct control surfaces — conflating them is how the active pill
+     ended up invisible. A segmented WELL is recessed below the panel; a slider
+     TRACK is a groove that must stay visible, so in a dark theme it goes
+     LIGHTER than the panel (there is no luminance room below it). */
+  --well: #141414;          /* segmented well — recessed */
+  --track: #333333;         /* slider groove — raised, stays legible */
+  --raised: #3d3d3d;        /* active pill, above the well */
+  --active: #333333;        /* a control sitting directly on a panel */
+
+  --fg: #ffffff;
+  --fg-muted: #a1a1a1;
+  --fg-faint: #6e6e6e;
+
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.12);
+  --hover: rgba(255, 255, 255, 0.045);
+
+  /* Two accents: the bright one for fills, tracks, playhead and indicators;
+     a darker one for accent SURFACES that carry text — white on #0d99ff is
+     only 2.99:1, which fails for a button label. */
+  --accent: #0d99ff;
+  --accent-strong: #0a72c6;   /* #0b7ad1 gave white only 4.45:1 */
+  --accent-fg: #ffffff;
+  --lane: #4a4a4a;          /* inactive timeline lanes */
+
+  /* depth. Panels also carry a 1px top highlight — that is what reads as
+     "raised" without resorting to a bevel. */
+  --shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-cluster: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-pop: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --shadow-segment: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-artboard: 0 24px 70px -16px rgba(0, 0, 0, 0.8);
+  --artboard-ring: rgba(255, 255, 255, 0.05);
+}
+
+:root.light {
+  --field: #eeeeee;
+  --panel: #ffffff;
+  /* classic recessed well + white raised pill, the way iOS/Figma do it */
+  --well: #dcdcdc;          /* #ebebeb left the white pill at only 1.19 */
+  --track: #d8d8d8;
+  --raised: #ffffff;
+  --active: #e2e2e2;
+
+  --fg: #1a1a1a;
+  --fg-muted: #616161;
+  --fg-faint: #808080;      /* #9a9a9a was only 2.8:1 on white */
+
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.16);
+  --hover: rgba(0, 0, 0, 0.04);
+
+  --accent: #0b84e0;        /* bright blue is only 2.99:1 on white */
+  --accent-strong: #0a6fc0;
+  --accent-fg: #ffffff;
+  --lane: #c9c9c9;
+
+  /* light shadows must be far softer or they read as dirt */
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-cluster: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-pop: 0 6px 20px rgba(0, 0, 0, 0.14);
+  --shadow-segment: 0 1px 2px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+  --shadow-artboard: 0 20px 60px -18px rgba(0, 0, 0, 0.35);
+  --artboard-ring: rgba(0, 0, 0, 0.1);
+}
+
+@theme inline {
+  /* Inter for the chrome — what Figma, Framer and shadcn all ship with.
+     The artboard gets its own tokens; never fold them into --font-sans, or the
+     prototype silently loses Capsule Sans when the harness is restyled. */
+  --font-sans: Inter, ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+  --font-brand: "Capsule Sans Text", "Capsule Sans", Inter, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Martina Plantijn", Georgia, "Times New Roman", serif;
+
+  --color-canvas: #000000;            /* the artboard's own body — constant */
+  --color-background: var(--field);
+  --color-workspace: var(--field);
+  --color-surface: var(--panel);
+  --color-surface-raised: var(--raised);
+  --color-surface-active: var(--active);
+  --color-track: var(--track);
+  --color-well: var(--well);
+
+  --color-foreground: var(--fg);
+  --color-muted-foreground: var(--fg-muted);
+  --color-inactive: var(--fg-faint);
+  --color-border: var(--line);
+  --color-border-strong: var(--line-strong);
+  --color-hover: var(--hover);
+  --color-lane: var(--lane);
+
+  --color-primary: var(--fg);
+  --color-primary-foreground: var(--field);
+  --color-secondary: var(--raised);
+  --color-secondary-foreground: var(--fg);
+  --color-accent: var(--raised);
+  --color-accent-foreground: var(--fg);
+  --color-accent-brand: var(--accent);
+  --color-accent-brand-strong: var(--accent-strong);
+  --color-accent-brand-foreground: var(--accent-fg);
+  --color-ring: var(--accent);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--field);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+  }
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Browsers render a light native scrollbar on dark UI, which shows up as a
+     bright slab against the canvas. Thin, translucent, and inset via a
+     transparent border + background-clip so it reads as part of the chrome. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--fg-faint);
+    background-clip: content-box;
+  }
+  /* visible focus, but only for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+@utility panel {
+  background: var(--panel);
+  box-shadow: var(--shadow-panel);
+}
+@utility cluster {
+  background: var(--panel);
+  box-shadow: var(--shadow-cluster);
+}

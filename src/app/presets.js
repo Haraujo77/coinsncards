@@ -6,6 +6,7 @@ import {
   StaggerSource,
   CollisionMode,
 } from './state.js';
+import { getPresetOverride } from './presetDefaults.js';
 
 const N = 36;
 
@@ -41,7 +42,7 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.15, positionX: 0, positionY: 0, positionZ: 0 },
-      render: { background: '#0b0c10' },
+      render: { background: '#000000' },
       camera: shot(8, 42, 24, 0, 0.2, 0),
     },
   },
@@ -62,7 +63,7 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.2 },
-      render: { background: '#101218' },
+      render: { background: '#000000' },
       camera: shot(28, 48, 22, 0, 0.15, 0),
     },
   },
@@ -83,7 +84,7 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.05 },
-      render: { background: '#0c1014' },
+      render: { background: '#000000' },
       camera: shot(0, 46, 26, 0, 0.2, 0),
     },
   },
@@ -104,7 +105,7 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.1 },
-      render: { background: '#0e1210' },
+      render: { background: '#000000' },
       camera: shot(0, 44, 24, 0, 0.15, 0),
     },
   },
@@ -125,7 +126,7 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.05 },
-      render: { background: '#120e10' },
+      render: { background: '#000000' },
       camera: shot(18, 50, 26, 0, 0.2, 0.4),
     },
   },
@@ -148,12 +149,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.08 },
-      render: { background: '#0d0b12' },
+      render: { background: '#000000' },
       camera: shot(0, 40, 27, 0, 0.15, 0),
     },
   },
   {
-    name: 'Stacked Card Spiral',
+    name: 'Stacked Spiral',
     state: {
       object: { type: 'card' },
       card: {
@@ -174,12 +175,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.U, amountDeg: 260, falloff: 1.0, direction: 1 },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 5.6, positionX: 0, positionY: 0, positionZ: 0 },
-      render: { background: '#0b0c10' },
+      render: { background: '#000000' },
       camera: shot(34, 66, 16, 0, 3.1, 0.4),
     },
   },
   {
-    name: 'Icon Spiral Stack',
+    name: 'Spiral Stack',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.14, cornerRadius: 0.22, segments: 8 },
@@ -194,12 +195,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.U, amountDeg: 300, falloff: 1.0, direction: 1 },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 4.5, positionX: 0, positionY: 0, positionZ: 0 },
-      render: { background: '#f4f4f5' },
+      render: { background: '#000000' },
       camera: shot(34, 64, 19, 0.3, 6.2, 0.5),
     },
   },
   {
-    name: 'Icon Hero Parade',
+    name: 'Hero Parade',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.1, cornerRadius: 0.22, segments: 8 },
@@ -219,12 +220,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.SINE, amountDeg: 16, falloff: 1.0, sineFreq: 1.1 },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.15, positionX: 0, positionY: 1.08, positionZ: 0 },
-      render: { background: '#d5e8fb' },
+      render: { background: '#000000' },
       camera: shot(-32, 64, 26, 4.5, 1.5, 1.2),
     },
   },
   {
-    name: 'Icon Iso Breakdown',
+    name: 'Iso Breakdown',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.22, segments: 8 },
@@ -240,12 +241,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.05, positionX: 0, positionY: 1.05, positionZ: 0 },
-      render: { background: '#d7e3f0' },
+      render: { background: '#000000' },
       camera: shot(45, 54.7, 32, -1.4, 2.35, -0.6),
     },
   },
   {
-    name: 'Icon Golden Vortex',
+    name: 'Golden Vortex',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.1, cornerRadius: 0.22, segments: 8 },
@@ -261,12 +262,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.55, positionX: 0, positionY: 0, positionZ: 0 },
-      render: { background: '#07080c' },
+      render: { background: '#000000' },
       camera: shot(22, 34, 31, 0.4, -1.35, 0.3),
     },
   },
   {
-    name: 'Icon Frozen Cascade',
+    name: 'Frozen Cascade',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.2, segments: 8 },
@@ -282,12 +283,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.65, positionX: 0, positionY: 0, positionZ: 0 },
-      render: { background: '#0b0c12' },
+      render: { background: '#000000' },
       camera: shot(62, 80, 24, -0.2, 0.1, 1.6),
     },
   },
   {
-    name: 'Icon Grid Glitch',
+    name: 'Grid Glitch',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.11, cornerRadius: 0.2, segments: 8 },
@@ -304,12 +305,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.7, positionX: 0, positionY: 0.85, positionZ: 0 },
-      render: { background: '#ece8df' },
+      render: { background: '#000000' },
       camera: shot(45, 54.7, 14.8, 0, 1.35, 0),
     },
   },
   {
-    name: 'Icon Silhouette Pack',
+    name: 'Silhouette Pack',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.22, segments: 8 },
@@ -326,12 +327,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.35, positionX: 0, positionY: 0.08, positionZ: 0 },
-      render: { background: '#f4f0e8' },
+      render: { background: '#000000' },
       camera: shot(18, 26, 16.5, 0, 0.15, 0),
     },
   },
   {
-    name: 'Card Edge Fan',
+    name: 'Edge Fan',
     state: {
       object: { type: 'card' },
       card: {
@@ -353,12 +354,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.4, positionX: 0, positionY: 1.74, positionZ: 0 },
-      render: { background: '#0a0a0c' },
+      render: { background: '#000000' },
       camera: shot(-78, 80, 11.5, -1.6, 1.7, 1.4),
     },
   },
   {
-    name: 'Icon Domino',
+    name: 'Domino',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.14, cornerRadius: 0.2, segments: 8 },
@@ -376,12 +377,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.U, amountDeg: 28, falloff: 1.0, direction: 1 },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.2, positionX: 0, positionY: 1.1, positionZ: 0 },
-      render: { background: '#ece7de' },
+      render: { background: '#000000' },
       camera: shot(-42, 62, 16, -0.4, 1.2, 0.5),
     },
   },
   {
-    name: 'Icon Overlap Stair',
+    name: 'Overlap Stair',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.13, cornerRadius: 0.2, segments: 8 },
@@ -400,12 +401,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.25, positionX: 0, positionY: 1.13, positionZ: 0 },
-      render: { background: '#dfe6f2' },
+      render: { background: '#000000' },
       camera: shot(-28, 54, 17, 0.6, 1.8, 0.8),
     },
   },
   {
-    name: 'Icon Layer Stack',
+    name: 'Layer Stack',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.22, segments: 8 },
@@ -422,12 +423,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 4.8, positionX: 0, positionY: 0, positionZ: 0 },
-      render: { background: '#ffffff' },
+      render: { background: '#000000' },
       camera: shot(32, 52, 16, 0.15, 0.15, 0.2),
     },
   },
   {
-    name: 'Icon Carousel',
+    name: 'Carousel',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.14, cornerRadius: 0.22, segments: 8 },
@@ -445,12 +446,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.15, positionX: 0, positionY: 1.08, positionZ: 0 },
-      render: { background: '#0c0d10' },
+      render: { background: '#000000' },
       camera: shot(34, 50, 32, 0, 1.2, 0),
     },
   },
   {
-    name: 'Icon Double Crown',
+    name: 'Double Crown',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.13, cornerRadius: 0.22, segments: 8 },
@@ -474,7 +475,7 @@ export const PRESETS = [
     },
   },
   {
-    name: 'Icon Nested Orbits',
+    name: 'Nested Orbits',
     state: {
       object: { type: 'icon' },
       icon: { size: 0.92, thickness: 0.12, cornerRadius: 0.22, segments: 8 },
@@ -493,12 +494,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.75, positionX: 0, positionY: 0.88, positionZ: 0 },
-      render: { background: '#111318' },
+      render: { background: '#000000' },
       camera: shot(16, 40, 34, 0, 0.95, 0),
     },
   },
   {
-    name: 'Icon Look Up',
+    name: 'Look Up',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.14, cornerRadius: 0.22, segments: 8 },
@@ -516,12 +517,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.15, positionX: 0, positionY: 1.08, positionZ: 0 },
-      render: { background: '#0a0b0e' },
+      render: { background: '#000000' },
       camera: shot(10, 112, 22, 0, 1.2, 0),
     },
   },
   {
-    name: 'Icon Coverflow',
+    name: 'Cover Flow',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.22, segments: 8 },
@@ -535,12 +536,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.55, positionX: 0, positionY: 1.28, positionZ: 0 },
-      render: { background: '#e7edf6' },
+      render: { background: '#000000' },
       camera: shot(0, 68, 18.5, 0, 1.4, 1.2),
     },
   },
   {
-    name: 'Icon Fan Deck',
+    name: 'Fan Deck',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.15, thickness: 0.1, cornerRadius: 0.18, segments: 8 },
@@ -554,12 +555,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'z', source: StaggerSource.U, amountDeg: 14, falloff: 1.0 },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 3.2, positionX: 0, positionY: 0, positionZ: 0 },
-      render: { background: '#8d8d8d' },
+      render: { background: '#000000' },
       camera: shot(6, 58, 20, 0.15, 0.05, 0.6),
     },
   },
   {
-    name: 'Icon Diagonal Shelf',
+    name: 'Diagonal Shelf',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.22, segments: 8 },
@@ -577,12 +578,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.U, amountDeg: 8, falloff: 1.0 },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.7, positionX: 0, positionY: 1.35, positionZ: 0 },
-      render: { background: '#d8e0ee' },
+      render: { background: '#000000' },
       camera: shot(-38, 48, 24, 0.2, 1.55, 0.4),
     },
   },
   {
-    name: 'Icon Wave Parade',
+    name: 'Wave Parade',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.22, segments: 8 },
@@ -599,12 +600,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.SINE, amountDeg: 16, falloff: 1.0, sineFreq: 1.1 },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.2, positionX: 0, positionY: 1.1, positionZ: 0 },
-      render: { background: '#101218' },
+      render: { background: '#000000' },
       camera: shot(72, 64, 26, 0, 1.4, 0.3),
     },
   },
   {
-    name: 'Icon Horizon',
+    name: 'Horizon',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.11, cornerRadius: 0.2, segments: 8 },
@@ -622,12 +623,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.35, positionX: 0, positionY: 1.18, positionZ: 0 },
-      render: { background: '#f2efe8' },
+      render: { background: '#000000' },
       camera: shot(6, 80, 20, 2.4, 1.2, 0.3),
     },
   },
   {
-    name: 'Icon Avenue',
+    name: 'Avenue',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.2, segments: 8 },
@@ -643,12 +644,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 2.1, positionX: 0, positionY: 1.05, positionZ: 0 },
-      render: { background: '#ece8e1' },
+      render: { background: '#000000' },
       camera: shot(4, 74, 24, 0, 1.15, 5.8),
     },
   },
   {
-    name: 'Icon Iso Grid',
+    name: 'Iso Grid',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.05, thickness: 0.11, cornerRadius: 0.2, segments: 8 },
@@ -672,12 +673,12 @@ export const PRESETS = [
         rotY: 0,
         rotZ: 0,
       },
-      render: { background: '#f3f1ec' },
+      render: { background: '#000000' },
       camera: shot(38, 50, 15.5, 0.7, 1.45, 1.15),
     },
   },
   {
-    name: 'Icon Low Field',
+    name: 'Low Field',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.0, thickness: 0.12, cornerRadius: 0.2, segments: 8 },
@@ -693,12 +694,12 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 1.95, positionX: 0, positionY: 0.98, positionZ: 0 },
-      render: { background: '#f4f2ed' },
+      render: { background: '#000000' },
       camera: shot(30, 76, 30, 2.2, 1.1, 7.0),
     },
   },
   {
-    name: 'Icon Monument',
+    name: 'Monument',
     state: {
       object: { type: 'icon' },
       icon: { size: 1.05, thickness: 0.12, cornerRadius: 0.2, segments: 8 },
@@ -714,7 +715,7 @@ export const PRESETS = [
       stagger: { enabled: false },
       collision: { mode: CollisionMode.OFF },
       transform: { scale: 3.4, positionX: 0, positionY: 1.79, positionZ: 0 },
-      render: { background: '#eae6de' },
+      render: { background: '#000000' },
       camera: shot(36, 68, 22, 0.3, 1.75, 0.8),
     },
   },
@@ -733,12 +734,12 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.INDEX, amountDeg: 280, falloff: 1.0 },
       collision: { mode: CollisionMode.RESOLVE, iterations: 10 },
       transform: { scale: 1.05 },
-      render: { background: '#0b0c10' },
+      render: { background: '#000000' },
       camera: shot(22, 52, 28, 0, 0.3, 0),
     },
   },
   {
-    name: 'Radial Gradient Rotation',
+    name: 'Radial Rotation',
     state: {
       object: { type: 'coin' },
       distribution: {
@@ -754,7 +755,7 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.RADIAL, amountDeg: 360, falloff: 1.8 },
       collision: { mode: CollisionMode.PREVENT, autoIncreaseSpacing: true },
       transform: { scale: 1.15 },
-      render: { background: '#111318' },
+      render: { background: '#000000' },
       camera: shot(18, 38, 16, 0, 0.1, 0),
     },
   },
@@ -775,7 +776,7 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'x', source: StaggerSource.SINE, amountDeg: 72, falloff: 1.0, sineFreq: 2.3, sinePhase: 0.0 },
       collision: { mode: CollisionMode.PREVENT, autoIncreaseSpacing: true },
       transform: { scale: 1.15 },
-      render: { background: '#0e1218' },
+      render: { background: '#000000' },
       camera: shot(32, 42, 15.5, 0, 0.15, 0),
     },
   },
@@ -796,7 +797,7 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'z', source: StaggerSource.DIST_CENTER, amountDeg: 180, falloff: 2.0 },
       collision: { mode: CollisionMode.RESOLVE, iterations: 12, cellSize: 1.2 },
       transform: { scale: 1.0 },
-      render: { background: '#0a0c10' },
+      render: { background: '#000000' },
       camera: shot(28, 58, 26, 0, 0.4, 0),
     },
   },
@@ -818,7 +819,7 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.LAYER, amountDeg: 220, falloff: 1.0 },
       collision: { mode: CollisionMode.RESOLVE, iterations: 14, cellSize: 1.0, maxPush: 0.5 },
       transform: { scale: 1.15 },
-      render: { background: '#101014' },
+      render: { background: '#000000' },
       camera: shot(38, 56, 13, 0, 0.2, 0),
     },
   },
@@ -838,7 +839,7 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'z', source: StaggerSource.INDEX, amountDeg: 520, falloff: 1.0 },
       collision: { mode: CollisionMode.RESOLVE, iterations: 10, cellSize: 1.1 },
       transform: { scale: 1.1 },
-      render: { background: '#0c0e12' },
+      render: { background: '#000000' },
       camera: shot(48, 68, 20, 0, 0.2, 0),
     },
   },
@@ -861,7 +862,7 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.GRADIENT_X, amountDeg: 160, falloff: 1.2 },
       collision: { mode: CollisionMode.PREVENT, autoIncreaseSpacing: true },
       transform: { scale: 1.1 },
-      render: { background: '#12110e' },
+      render: { background: '#000000' },
       camera: shot(0, 40, 17, 0, 0.1, 0),
     },
   },
@@ -881,7 +882,7 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'y', source: StaggerSource.INDEX, amountDeg: 640, falloff: 1.0 },
       collision: { mode: CollisionMode.RESOLVE, iterations: 10, cellSize: 1.1 },
       transform: { scale: 1.05 },
-      render: { background: '#0b1012' },
+      render: { background: '#000000' },
       camera: shot(40, 62, 22, 0, 0.15, 0),
     },
   },
@@ -902,18 +903,119 @@ export const PRESETS = [
       stagger: { enabled: true, axis: 'z', source: StaggerSource.NOISE, amountDeg: 160, falloff: 1.0, noiseScale: 0.15, noiseStrength: 1.0 },
       collision: { mode: CollisionMode.RESOLVE, iterations: 12, cellSize: 1.2 },
       transform: { scale: 1.0 },
-      render: { background: '#0a0b10' },
+      render: { background: '#000000' },
       camera: shot(18, 54, 26, 0, 0.3, 0),
     },
   },
 ];
 
+const PRESET_ALIASES = {
+  'Stacked Card Spiral': 'Stacked Spiral',
+  'Icon Spiral Stack': 'Spiral Stack',
+  'Icon Hero Parade': 'Hero Parade',
+  'Icon Iso Breakdown': 'Iso Breakdown',
+  'Icon Golden Vortex': 'Golden Vortex',
+  'Icon Frozen Cascade': 'Frozen Cascade',
+  'Icon Grid Glitch': 'Grid Glitch',
+  'Icon Silhouette Pack': 'Silhouette Pack',
+  'Card Edge Fan': 'Edge Fan',
+  'Icon Domino': 'Domino',
+  'Icon Overlap Stair': 'Overlap Stair',
+  'Icon Layer Stack': 'Layer Stack',
+  'Icon Carousel': 'Carousel',
+  'Icon Double Crown': 'Double Crown',
+  'Icon Nested Orbits': 'Nested Orbits',
+  'Icon Look Up': 'Look Up',
+  'Icon Coverflow': 'Cover Flow',
+  'Icon Fan Deck': 'Fan Deck',
+  'Icon Diagonal Shelf': 'Diagonal Shelf',
+  'Icon Wave Parade': 'Wave Parade',
+  'Icon Horizon': 'Horizon',
+  'Icon Avenue': 'Avenue',
+  'Icon Iso Grid': 'Iso Grid',
+  'Icon Low Field': 'Low Field',
+  'Icon Monument': 'Monument',
+  'Radial Gradient Rotation': 'Radial Rotation',
+};
+
+const PRESET_ORDER = [
+  'Circle Loop',
+  'Square Loop',
+  'Lozenge Loop',
+  'Hexagon Loop',
+  'Triangle Loop',
+  'Star Loop',
+  'Spiral Loop',
+  'Twisted Ring',
+  'Helix Tube',
+  'Stacked Spiral',
+  'Spiral Stack',
+  'Golden Vortex',
+  'Carousel',
+  'Nested Orbits',
+  'Orbital Bands',
+  'Double Crown',
+  'Look Up',
+  'Cover Flow',
+  'Edge Fan',
+  'Fan Deck',
+  'Hero Parade',
+  'Wave Parade',
+  'Diagonal Shelf',
+  'Horizon',
+  'Avenue',
+  'Domino',
+  'Overlap Stair',
+  'Layer Stack',
+  'Iso Grid',
+  'Iso Breakdown',
+  'Low Field',
+  'Monument',
+  'Wave Grid',
+  'Diamond Grid',
+  'Radial Rotation',
+  'Grid Glitch',
+  'Dense Cube',
+  'Frozen Cascade',
+  'Silhouette Pack',
+  'Sphere Shell',
+];
+
+export function canonicalPresetName(name) {
+  return PRESET_ALIASES[name] || name;
+}
+
 export function listPresetNames() {
-  return PRESETS.map((p) => p.name);
+  const names = PRESETS.map((p) => p.name);
+  const seen = new Set();
+  const ordered = [];
+  for (const name of PRESET_ORDER) {
+    if (names.includes(name) && !seen.has(name)) {
+      ordered.push(name);
+      seen.add(name);
+    }
+  }
+  for (const name of names) {
+    if (!seen.has(name)) ordered.push(name);
+  }
+  return ordered;
 }
 
 export function getPresetByName(name) {
-  return PRESETS.find((p) => p.name === name) ?? PRESETS[0];
+  const key = canonicalPresetName(name);
+  const base = PRESETS.find((p) => p.name === key) ?? PRESETS[0];
+  const factory = JSON.parse(JSON.stringify(base.state));
+  const override =
+    getPresetOverride(base.name) ||
+    Object.entries(PRESET_ALIASES)
+      .filter(([, neu]) => neu === base.name)
+      .map(([old]) => getPresetOverride(old))
+      .find(Boolean) ||
+    null;
+  return {
+    name: base.name,
+    state: override ? deepMerge(factory, override) : factory,
+  };
 }
 
 export function deepMerge(target, patch) {

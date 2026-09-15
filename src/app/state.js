@@ -100,10 +100,10 @@ export const CollisionMode = Object.freeze({
 
 export function createDefaultState() {
   return {
-    preset: 'Icon Iso Grid',
+    preset: 'Iso Grid',
 
     render: {
-      background: '#0b0c10',
+      background: '#000000',
       pixelRatio: 1,
       solid: true,
       outline: false,

@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Theme. Raw values live in :root / :root.light as plain CSS vars; @theme
+   inline then maps them to Tailwind utilities *by reference*, so flipping one
+   class on <html> reflows the whole palette at runtime.
+   The chrome is deliberately neutral — brand lives inside the artboard.
+--------------------------------------------------------------------------- */
+:root {
+  --field: #131313;
+  --panel: #1e1e1e;
+  --well: #141414;
+  --track: #333333;
+  --raised: #3d3d3d;
+  --active: #333333;
+
+  --fg: #ffffff;
+  --fg-muted: #a1a1a1;
+  --fg-faint: #6e6e6e;
+
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.12);
+  --hover: rgba(255, 255, 255, 0.045);
+
+  --accent: #0d99ff;
+  --accent-strong: #0a72c6;
+  --accent-fg: #ffffff;
+  --lane: #4a4a4a;
+
+  --shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-cluster: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-pop: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --shadow-segment: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-artboard: 0 24px 70px -16px rgba(0, 0, 0, 0.8);
+  --artboard-ring: rgba(255, 255, 255, 0.05);
+}
+
+:root.light {
+  --field: #eeeeee;
+  --panel: #ffffff;
+  --well: #dcdcdc;
+  --track: #d8d8d8;
+  --raised: #ffffff;
+  --active: #e2e2e2;
+
+  --fg: #1a1a1a;
+  --fg-muted: #616161;
+  --fg-faint: #808080;
+
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.16);
+  --hover: rgba(0, 0, 0, 0.04);
+
+  --accent: #0b84e0;
+  --accent-strong: #0a6fc0;
+  --accent-fg: #ffffff;
+  --lane: #c9c9c9;
+
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-cluster: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-pop: 0 6px 20px rgba(0, 0, 0, 0.14);
+  --shadow-segment: 0 1px 2px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+  --shadow-artboard: 0 20px 60px -18px rgba(0, 0, 0, 0.35);
+  --artboard-ring: rgba(0, 0, 0, 0.1);
+}
+
+@theme inline {
+  --font-sans: Inter, ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+
+  --color-canvas: #000000;
+  --color-background: var(--field);
+  --color-workspace: var(--field);
+  --color-surface: var(--panel);
+  --color-surface-raised: var(--raised);
+  --color-surface-active: var(--active);
+  --color-track: var(--track);
+  --color-well: var(--well);
+
+  --color-foreground: var(--fg);
+  --color-muted-foreground: var(--fg-muted);
+  --color-inactive: var(--fg-faint);
+  --color-border: var(--line);
+  --color-border-strong: var(--line-strong);
+  --color-hover: var(--hover);
+  --color-lane: var(--lane);
+
+  --color-primary: var(--fg);
+  --color-primary-foreground: var(--field);
+  --color-secondary: var(--raised);
+  --color-secondary-foreground: var(--fg);
+  --color-accent: var(--raised);
+  --color-accent-foreground: var(--fg);
+  --color-accent-brand: var(--accent);
+  --color-accent-brand-strong: var(--accent-strong);
+  --color-accent-brand-foreground: var(--accent-fg);
+  --color-ring: var(--accent);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--field);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+  }
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .no-select input,
+  .no-select textarea {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--fg-faint);
+    background-clip: content-box;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+@utility panel {
+  background: var(--panel);
+  box-shadow: var(--shadow-panel);
+}
+@utility cluster {
+  background: var(--panel);
+  box-shadow: var(--shadow-cluster);
+}

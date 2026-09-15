@@ -1,4 +1,4 @@
-# Disks Composer (three.js)
+# 3D Composer (three.js)
 
 Aplicativo web interativo para gerar composições 3D usando apenas **discos finos (tipo moedas)** com `three.js` + `InstancedMesh`.
 
@@ -28,4 +28,3 @@ Abra o endereço mostrado no terminal.
 - `src/app/instancing.js`: criação/atualização de matrizes do `InstancedMesh`
 - `src/app/exportPng.js`: export PNG hi-res
 - `src/app/ui.js`: UI (`lil-gui`)
-

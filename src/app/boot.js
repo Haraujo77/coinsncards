@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { createDefaultState } from './state.js';
-import { deepMerge, getPresetByName } from './presets.js';
-import { createUi } from './ui.js';
+import { canonicalPresetName, deepMerge, getPresetByName } from './presets.js';
+import { clearPresetOverride, hasPresetOverride, lastPreset, rememberPreset, savePresetOverride } from './presetDefaults.js';
 import { createUnitCardGeometry, createUnitDiscGeometry } from './discGeometry.js';
 import { generateDistribution, distributionBounds } from './distributions.js';
 import { applyCollisionPolicy } from './collision.js';
@@ -54,15 +54,16 @@ function createJsonFilePicker({ accept = '.json,application/json', onJson }) {
   };
 }
 
-export function boot() {
-  const canvas = document.querySelector('#c');
-  if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Canvas #c not found');
+export function boot(opts = {}) {
+  const canvas = opts.canvas ?? document.querySelector('#c');
+  if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Canvas not found');
   canvas.tabIndex = 0;
 
-  const toast = createToast();
+  const toast = opts.toast ?? createToast(opts.toastEl ?? undefined);
 
   const state = createDefaultState();
-  // Apply default preset immediately
+  const remembered = lastPreset();
+  if (remembered) state.preset = canonicalPresetName(remembered);
   deepMerge(state, getPresetByName(state.preset).state);
 
   const renderer = new THREE.WebGLRenderer({
@@ -84,6 +85,9 @@ export function boot() {
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.target.set(state.camera?.targetX ?? 0, state.camera?.targetY ?? 0, state.camera?.targetZ ?? 0);
+  controls.addEventListener('start', () => {
+    skipOrbitSync = false;
+  });
 
   // Space + drag moves the composition in screen space; camera stays put.
   const _panRight = new THREE.Vector3();
@@ -203,6 +207,7 @@ export function boot() {
   let dirty = true;
   let requestFrame = true;
   let skipOrbitSync = false;
+  let orbitLock = false;
 
   function applyCameraFromState() {
     const c = state.camera;
@@ -212,10 +217,6 @@ export function boot() {
     const pol = THREE.MathUtils.degToRad(c.polarDeg ?? 60);
     const dist = Math.max(0.01, c.distance ?? 30);
 
-    // OrbitControls usa coordenadas esféricas em torno do target:
-    // x = r * sin(phi) * sin(theta)
-    // y = r * cos(phi)
-    // z = r * sin(phi) * cos(theta)
     const sinPhi = Math.sin(pol);
     const offset = new THREE.Vector3(
       dist * sinPhi * Math.sin(az),
@@ -225,7 +226,10 @@ export function boot() {
     if (!Number.isFinite(offset.x + offset.y + offset.z)) return;
     camera.position.copy(controls.target).add(offset);
     camera.lookAt(controls.target);
+    const damping = controls.enableDamping;
+    controls.enableDamping = false;
     controls.update();
+    controls.enableDamping = damping;
   }
 
   function captureCameraToState() {
@@ -288,7 +292,7 @@ export function boot() {
     radii = built.radii;
 
     const colResult = applyCollisionPolicy(items, radii, state);
-    if (colResult.overlapsRemaining) toast('Ainda há overlaps (ajuste espaçamento/iteração).', 2200);
+    if (colResult.overlapsRemaining) toast('Still overlapping — increase spacing or iterations.', 2200);
 
     updateInstancedMatrices(inst, items, bounds, state, camera, scales);
 
@@ -334,16 +338,30 @@ export function boot() {
     applyCameraFromState();
   }
 
-  function applyPreset(name) {
+  function applyPreset(name, { silent } = {}) {
     const preset = getPresetByName(name);
     state.preset = preset.name;
     deepMerge(state, preset.state);
+    rememberPreset(preset.name);
     ui.setPreset?.(preset.name);
     dirty = true;
     requestFrame = !preset.state.camera;
     skipOrbitSync = true;
     rebuild();
-    toast(`Preset: ${preset.name}`);
+    if (!silent) toast(`Preset: ${preset.name}`);
+  }
+
+  function saveAsDefault() {
+    const name = state.preset;
+    savePresetOverride(name, state);
+    toast(`Saved as default for ${name}`);
+  }
+
+  function restoreFactory() {
+    const name = state.preset;
+    clearPresetOverride(name);
+    applyPreset(name, { silent: true });
+    toast(`Restored original ${name}`);
   }
 
   async function doExport() {
@@ -359,19 +377,19 @@ export function boot() {
   }
 
   function savePreset() {
-    const name = window.prompt('Nome do preset', `${state.preset} (custom)`);
+    const name = window.prompt('Preset name', `${state.preset} (custom)`);
     if (!name) return;
     // Snapshot do estado atual (sem funções)
     const snapshot = JSON.parse(JSON.stringify(state));
     snapshot.preset = name;
     downloadJson(`${name}.json`, { name, state: snapshot });
-    toast(`Preset salvo: ${name}.json`);
+    toast(`Saved ${name}.json`);
   }
 
   const picker = createJsonFilePicker({
     onJson: (json, filename) => {
       if (json?.__error) {
-        toast(`Falha ao ler JSON: ${filename}`);
+        toast(`Couldn't read ${filename}`);
         return;
       }
       // Aceita: { name, state } ou um objeto de state direto
@@ -384,7 +402,7 @@ export function boot() {
       requestFrame = !incomingState?.camera;
       skipOrbitSync = true;
       rebuild();
-      toast(`Preset carregado: ${name}`);
+      toast(`Loaded ${name}`);
     },
   });
 
@@ -392,37 +410,14 @@ export function boot() {
     picker.open();
   }
 
-  const ui = createUi({
-    state,
-    onAnyChange: (tag) => {
-      if (tag === '__cameraFrame__') {
-        requestFrame = true;
-        dirty = true;
-        return;
-      }
-      onAnyChange();
+  const ui = {
+    refresh() {
+      opts.onUiSync?.();
     },
-    onApplyPreset: applyPreset,
-    onExport: doExport,
-    onSavePreset: savePreset,
-    onLoadPreset: loadPreset,
-    onCameraCapture: () => {
-      captureCameraToState();
-      dirty = true;
-      toast('Câmera capturada no preset atual.');
+    setPreset() {
+      opts.onUiSync?.();
     },
-    onCameraReset: () => {
-      state.camera.azimuthDeg = 45;
-      state.camera.polarDeg = 55;
-      state.camera.distance = 30;
-      state.camera.targetX = 0;
-      state.camera.targetY = 0;
-      state.camera.targetZ = 0;
-      requestFrame = true;
-      dirty = true;
-      toast('Câmera resetada.');
-    },
-  });
+  };
 
   function resize() {
     const w = canvas.clientWidth;
@@ -433,6 +428,11 @@ export function boot() {
     camera.aspect = Math.max(1e-6, w / Math.max(1, h));
     camera.updateProjectionMatrix();
   }
+  const ro = new ResizeObserver(() => {
+    resize();
+    dirty = true;
+  });
+  ro.observe(canvas);
   window.addEventListener('resize', () => {
     resize();
     dirty = true;
@@ -452,8 +452,7 @@ export function boot() {
 
   renderer.setAnimationLoop(() => {
     const sceneDragging = spacePan.down || spacePan.dragging;
-    if (!sceneDragging) controls.update();
-    // Se o usuário arrasta, mantém sliders sincronizados (opcional)
+    if (!sceneDragging && !skipOrbitSync) controls.update();
     if (state.camera?.syncFromOrbit && !skipOrbitSync && !sceneDragging) {
       captureCameraToState();
       const now = performance.now();
@@ -462,9 +461,63 @@ export function boot() {
         lastUiSyncMs = now;
       }
     }
-    if (!sceneDragging) skipOrbitSync = false;
     if (dirty) rebuild();
     renderer.render(scene, camera);
   });
+
+  return {
+    state,
+    applyPreset,
+    exportPng: doExport,
+    savePreset,
+    loadPreset,
+    saveAsDefault,
+    restoreFactory,
+    hasOverride: () => hasPresetOverride(state.preset),
+    frameCamera() {
+      requestFrame = true;
+      dirty = true;
+    },
+    captureCamera() {
+      captureCameraToState();
+      dirty = true;
+      toast('Camera saved to this preset.');
+    },
+    resetCamera() {
+      state.camera.azimuthDeg = 45;
+      state.camera.polarDeg = 55;
+      state.camera.distance = 30;
+      state.camera.targetX = 0;
+      state.camera.targetY = 0;
+      state.camera.targetZ = 0;
+      requestFrame = true;
+      dirty = true;
+      toast('Camera reset.');
+    },
+    setDirty() {
+      dirty = true;
+      opts.onUiSync?.();
+    },
+    applyInspectorCamera() {
+      skipOrbitSync = true;
+      applyCameraFromState();
+      dirty = true;
+      opts.onUiSync?.();
+    },
+    setOrbitLock(on) {
+      orbitLock = !!on;
+      skipOrbitSync = !!on;
+    },
+    setCameraAzimuth(deg) {
+      state.camera.azimuthDeg = deg;
+      skipOrbitSync = true;
+      applyCameraFromState();
+    },
+    dispose() {
+      ro.disconnect();
+      renderer.setAnimationLoop(null);
+      renderer.dispose?.();
+    },
+  };
 }
 
