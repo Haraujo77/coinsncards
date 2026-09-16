@@ -219,7 +219,7 @@
     },
     "icon": {
       "size": 1,
-      "thickness": 0.1,
+      "thickness": 0.08,
       "cornerRadius": 0.24,
       "segments": 8,
       "varyEnabled": false,
@@ -252,8 +252,8 @@
       "height": 6,
       "turns": 4,
       "columnAxis": "y",
-      "columnCount": 3,
-      "columnSpacing": 0.32,
+      "columnCount": 10,
+      "columnSpacing": 0.15,
       "columnCentered": true,
       "carouselCount": 16,
       "carouselRadius": 6,
@@ -335,11 +335,11 @@
       "yawDeg": 0
     },
     "stagger": {
-      "enabled": false,
+      "enabled": true,
       "axis": "y",
       "source": "index",
       "curve": "smoothstep",
-      "amountDeg": -22,
+      "amountDeg": -90,
       "falloff": 1,
       "direction": 1,
       "noiseScale": 0.2,
@@ -363,12 +363,12 @@
     "camera": {
       "lockFraming": true,
       "syncFromOrbit": true,
-      "azimuthDeg": 45,
-      "polarDeg": 54.7,
-      "distance": 15,
+      "azimuthDeg": 47.34200743494432,
+      "polarDeg": 47.175604089219114,
+      "distance": 14.999999999999977,
       "targetX": 0.15,
       "targetY": 0.15,
-      "targetZ": 0.2
+      "targetZ": 0.19999999999999998
     }
   }
 }
