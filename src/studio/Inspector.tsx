@@ -293,6 +293,9 @@ function Row({
 
 export function Inspector({ state, tick, defaults, onChange, onResetGroup }: Props) {
   void tick;
+  const [openGroups, setOpenGroups] = useState(() =>
+    Object.fromEntries(PARAM_GROUPS.map((g) => [g.id, !!g.defaultOpen])),
+  );
   return (
     <aside
       className="relative z-10 flex h-full shrink-0 flex-col overflow-hidden rounded-xl"
@@ -304,7 +307,15 @@ export function Inspector({ state, tick, defaults, onChange, onResetGroup }: Pro
             const visible = group.params.filter((p) => !p.show || p.show(state));
             if (visible.length === 0) return null;
             return (
-              <details key={group.id} open={group.defaultOpen} className="group/g border-b border-border last:border-b-0">
+              <details
+                key={group.id}
+                className="group/g border-b border-border last:border-b-0"
+                open={openGroups[group.id] ?? false}
+                onToggle={(e) => {
+                  const next = (e.currentTarget as HTMLDetailsElement).open;
+                  setOpenGroups((s) => (s[group.id] === next ? s : { ...s, [group.id]: next }));
+                }}
+              >
                 <summary className="flex h-8 cursor-pointer list-none items-center px-2 text-[11px] text-inactive marker:content-none">
                   <span className="flex-1">{group.label}</span>
                   <button

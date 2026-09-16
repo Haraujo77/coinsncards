@@ -338,8 +338,8 @@ export function boot(opts = {}) {
     applyCameraFromState();
   }
 
-  function applyPreset(name, { silent } = {}) {
-    const preset = getPresetByName(name);
+  function applyPreset(name, { silent, factoryOnly } = {}) {
+    const preset = getPresetByName(name, { factoryOnly });
     state.preset = preset.name;
     deepMerge(state, preset.state);
     rememberPreset(preset.name);
@@ -351,17 +351,25 @@ export function boot(opts = {}) {
     if (!silent) toast(`Preset: ${preset.name}`);
   }
 
-  function saveAsDefault() {
+  async function saveAsDefault() {
     const name = state.preset;
-    savePresetOverride(name, state);
-    toast(`Saved as default for ${name}`);
+    const result = await savePresetOverride(name, state);
+    toast(
+      result?.published
+        ? `Saved as default for ${name} on every machine`
+        : `Saved as default for ${name} on this computer`,
+    );
   }
 
-  function restoreFactory() {
+  async function restoreFactory() {
     const name = state.preset;
-    clearPresetOverride(name);
-    applyPreset(name, { silent: true });
-    toast(`Restored original ${name}`);
+    const result = await clearPresetOverride(name);
+    applyPreset(name, { silent: true, factoryOnly: true });
+    toast(
+      result?.published
+        ? `Restored original ${name} on every machine`
+        : `Restored original ${name} on this computer`,
+    );
   }
 
   async function doExport() {

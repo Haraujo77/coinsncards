@@ -233,11 +233,13 @@ export const PARAM_GROUPS: ParamGroup[] = [
   {
     id: 'camera',
     label: 'Camera',
-    defaultOpen: false,
+    defaultOpen: true,
     params: [
       { key: 'camera.azimuthDeg', label: 'Orbit', min: -180, max: 180, step: 0.1, value: 45, fmt: x1 },
       { key: 'camera.polarDeg', label: 'Elevation', min: 1, max: 179, step: 0.1, value: 55, fmt: x1 },
       { key: 'camera.distance', label: 'Distance', min: 0.5, max: 300, step: 0.01, value: 30, fmt: x1 },
+      { key: 'camera.targetX', label: 'Horizontal', min: -40, max: 40, step: 0.01, value: 0, fmt: x2, hint: 'Slide the camera left and right.' },
+      { key: 'camera.targetY', label: 'Vertical', min: -40, max: 40, step: 0.01, value: 0, fmt: x2, hint: 'Slide the camera up and down.' },
       { key: 'camera.lockFraming', label: 'Lock frame', kind: 'boolean' },
     ],
   },

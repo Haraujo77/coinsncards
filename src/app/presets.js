@@ -6,8 +6,7 @@ import {
   StaggerSource,
   CollisionMode,
 } from './state.js';
-import { getPresetOverride } from './presetDefaults.js';
-import shippedDefaults from './shippedDefaults.json';
+import { getPresetOverride, getShipped } from './presetDefaults.js';
 
 const N = 36;
 
@@ -1003,11 +1002,14 @@ export function listPresetNames() {
   return ordered;
 }
 
-export function getPresetByName(name) {
+export function getPresetByName(name, opts = {}) {
   const key = canonicalPresetName(name);
   const base = PRESETS.find((p) => p.name === key) ?? PRESETS[0];
   const factory = JSON.parse(JSON.stringify(base.state));
-  const shipped = shippedDefaults[base.name];
+  if (opts.factoryOnly) {
+    return { name: base.name, state: factory };
+  }
+  const shipped = getShipped(base.name);
   if (shipped) deepMerge(factory, shipped);
   const override =
     getPresetOverride(base.name) ||

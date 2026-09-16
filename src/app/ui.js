@@ -225,6 +225,8 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   degController(fCamera, state.camera, 'azimuthDeg', 'Orbit', -180, 180, 0.1, onAnyChange);
   degController(fCamera, state.camera, 'polarDeg', 'Elevation', 1, 179, 0.1, onAnyChange);
   fCamera.add(state.camera, 'distance', 0.5, 300, 0.01).name('Distance').onChange(onAnyChange);
+  fCamera.add(state.camera, 'targetX', -40, 40, 0.01).name('Horizontal').onChange(onAnyChange);
+  fCamera.add(state.camera, 'targetY', -40, 40, 0.01).name('Vertical').onChange(onAnyChange);
   fCamera.add(state.camera, 'lockFraming').name('Lock frame').onChange(onAnyChange);
   fCamera.add(root, 'cameraFrame').name('Frame');
   fCamera.close();

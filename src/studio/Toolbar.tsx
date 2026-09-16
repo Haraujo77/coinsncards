@@ -17,7 +17,7 @@ type Props = {
   onCopy: () => void;
   onTheme: () => void;
   onInspector: () => void;
-  onSaveDefault: (opts?: { restore?: boolean }) => void;
+  onSaveDefault: (opts?: { restore?: boolean }) => void | Promise<void>;
 };
 
 export function Toolbar({
@@ -72,7 +72,7 @@ export function Toolbar({
             )}
           </Button>
         </Tip>
-        <Tip label={hasOverride ? 'Saved as this preset default. Alt-click restores the original.' : 'Save as default for this preset'}>
+        <Tip label={hasOverride ? 'Saved as this preset default on every machine. Alt-click restores the original.' : 'Save as the default for this preset on every machine'}>
           <Button
             variant="icon"
             size="icon"

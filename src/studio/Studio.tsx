@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { boot } from '@/app/boot.js';
+import { hydrateShippedDefaults } from '@/app/presetDefaults.js';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Inspector } from './Inspector';
 import { PARAM_GROUPS, getPath, setPath } from './params';
@@ -32,16 +33,25 @@ export function Studio() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const engine = boot({
-      canvas,
-      toastEl: toastRef.current,
-      onUiSync: () => setTick((n) => n + 1),
-    });
-    engineRef.current = engine;
-    setState(engine.state);
-    setDefaults(snapshotParams(engine.state));
-    setTick((n) => n + 1);
-    return () => engine.dispose?.();
+    let engine: any;
+    let cancelled = false;
+    (async () => {
+      await hydrateShippedDefaults();
+      if (cancelled) return;
+      engine = boot({
+        canvas,
+        toastEl: toastRef.current,
+        onUiSync: () => setTick((n) => n + 1),
+      });
+      engineRef.current = engine;
+      setState(engine.state);
+      setDefaults(snapshotParams(engine.state));
+      setTick((n) => n + 1);
+    })();
+    return () => {
+      cancelled = true;
+      engine?.dispose?.();
+    };
   }, []);
 
   useEffect(() => {
@@ -166,11 +176,11 @@ export function Studio() {
           onCopy={copyJson}
           onTheme={() => setTheme((th) => (th === 'dark' ? 'light' : 'dark'))}
           onInspector={() => setInspectorOpen((open) => !open)}
-          onSaveDefault={({ restore } = {}) => {
+          onSaveDefault={async ({ restore } = {}) => {
             const engine = engineRef.current;
             if (!engine) return;
-            if (restore) engine.restoreFactory();
-            else engine.saveAsDefault();
+            if (restore) await engine.restoreFactory();
+            else await engine.saveAsDefault();
             setDefaults(snapshotParams(engine.state));
             bump();
           }}
