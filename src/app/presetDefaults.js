@@ -96,7 +96,7 @@ export async function savePresetOverride(name, state) {
   rememberPreset(name);
   shipped = { ...shipped, [name]: snap };
   const result = await persistShipped('POST', { name, state: snap });
-  return { published: !!result?.published };
+  return { published: !!result?.published, error: result?.error || '' };
 }
 
 export async function clearPresetOverride(name) {
@@ -107,5 +107,5 @@ export async function clearPresetOverride(name) {
   delete next[name];
   shipped = next;
   const result = await persistShipped('DELETE', { name });
-  return { published: !!result?.published };
+  return { published: !!result?.published, error: result?.error || '' };
 }

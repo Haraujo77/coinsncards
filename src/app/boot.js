@@ -356,8 +356,10 @@ export function boot(opts = {}) {
     const result = await savePresetOverride(name, state);
     toast(
       result?.published
-        ? `Saved as default for ${name} on every machine`
-        : `Saved as default for ${name} on this computer`,
+        ? `Published ${name} as the production default`
+        : result?.error
+          ? `Saved ${name} here. Could not publish: ${result.error}`
+          : `Saved ${name} on this computer. Bookmark from localhost to publish.`,
     );
   }
 

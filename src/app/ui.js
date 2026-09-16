@@ -147,10 +147,10 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fRow.add(state.distribution, 'heroDetach', 0, 4, 0.01).name('Pop').onChange(onAnyChange);
 
   const fIso = fLayout.addFolder('Iso grid');
-  fIso.add(state.distribution, 'isoCountX', 1, 24, 1).name('X count').onChange(onAnyChange);
-  fIso.add(state.distribution, 'isoCountZ', 1, 24, 1).name('Z count').onChange(onAnyChange);
-  fIso.add(state.distribution, 'isoSpacingX', 0.2, 12, 0.05).name('X spacing').onChange(onAnyChange);
-  fIso.add(state.distribution, 'isoSpacingZ', 0.2, 12, 0.05).name('Z spacing').onChange(onAnyChange);
+  fIso.add(state.distribution, 'isoCountX', 1, 24, 1).name('Columns').onChange(onAnyChange);
+  fIso.add(state.distribution, 'isoCountZ', 1, 24, 1).name('Rows').onChange(onAnyChange);
+  fIso.add(state.distribution, 'isoSpacingX', 0.2, 12, 0.05).name('Horizontal').onChange(onAnyChange);
+  fIso.add(state.distribution, 'isoSpacingZ', 0.2, 12, 0.05).name('Vertical').onChange(onAnyChange);
   fIso.add(state.distribution, 'isoRowOffset', 0, 1, 0.01).name('Row offset').onChange(onAnyChange);
 
   const fBreak = fLayout.addFolder('Breakdown');
@@ -192,9 +192,9 @@ export function createUi({ state, onAnyChange, onApplyPreset, onExport, onSavePr
   fGrid.add(state.distribution, 'countX', 1, 80, 1).name('X count').onChange(onAnyChange);
   fGrid.add(state.distribution, 'countY', 1, 80, 1).name('Y count').onChange(onAnyChange);
   fGrid.add(state.distribution, 'countZ', 1, 80, 1).name('Z count').onChange(onAnyChange);
-  fGrid.add(state.distribution, 'spacingX', 0.1, 10, 0.01).name('X spacing').onChange(onAnyChange);
-  fGrid.add(state.distribution, 'spacingY', 0.1, 10, 0.01).name('Y spacing').onChange(onAnyChange);
-  fGrid.add(state.distribution, 'spacingZ', 0.1, 10, 0.01).name('Z spacing').onChange(onAnyChange);
+  fGrid.add(state.distribution, 'spacingX', 0.1, 10, 0.01).name('Horizontal').onChange(onAnyChange);
+  fGrid.add(state.distribution, 'spacingY', 0.1, 10, 0.01).name('Vertical').onChange(onAnyChange);
+  fGrid.add(state.distribution, 'spacingZ', 0.1, 10, 0.01).name('Depth').onChange(onAnyChange);
 
   const fRadial = fLayout.addFolder('Radial');
   fRadial.add(state.distribution, 'count', 1, 500, 1).name('Count').onChange(onAnyChange);

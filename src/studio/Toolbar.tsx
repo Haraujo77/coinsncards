@@ -72,7 +72,7 @@ export function Toolbar({
             )}
           </Button>
         </Tip>
-        <Tip label={hasOverride ? 'Saved as this preset default on every machine. Alt-click restores the original.' : 'Save as the default for this preset on every machine'}>
+        <Tip label={hasOverride ? 'This look is the production default. Alt-click restores the original.' : 'Publish this look as the production default'}>
           <Button
             variant="icon"
             size="icon"
