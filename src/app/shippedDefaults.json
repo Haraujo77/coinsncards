@@ -405,7 +405,7 @@
     },
     "icon": {
       "size": 1,
-      "thickness": 0.13,
+      "thickness": 0.08,
       "cornerRadius": 0.2,
       "segments": 8,
       "varyEnabled": false,
@@ -460,7 +460,7 @@
       "fanSpreadDeg": 72,
       "fanRadius": 3.4,
       "rowCount": 10,
-      "rowSpacing": 0.56,
+      "rowSpacing": 0.55,
       "rowAngleDeg": 0,
       "rowTiltDeg": 22,
       "heroIndex": 0,
@@ -518,14 +518,14 @@
       "extraRotX": 0,
       "extraRotY": 0,
       "extraRotZ": 0,
-      "yawDeg": 0
+      "yawDeg": 180
     },
     "stagger": {
-      "enabled": false,
+      "enabled": true,
       "axis": "y",
       "source": "index",
       "curve": "smoothstep",
-      "amountDeg": -22,
+      "amountDeg": 90,
       "falloff": 1,
       "direction": 1,
       "noiseScale": 0.2,
@@ -551,7 +551,7 @@
       "syncFromOrbit": true,
       "azimuthDeg": -45,
       "polarDeg": 45,
-      "distance": 15.000000000000053,
+      "distance": 14.999999999999886,
       "targetX": -1.3777076168754898,
       "targetY": 0.5393615426263255,
       "targetZ": -0.3934871502757279
