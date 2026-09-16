@@ -8,7 +8,9 @@
       "outlineWireframe": true,
       "transparentExport": false
     },
-    "object": { "type": "icon" },
+    "object": {
+      "type": "icon"
+    },
     "disc": {
       "diameter": 1,
       "thickness": 0.08,
@@ -93,10 +95,10 @@
       "heroLift": 0,
       "heroDetach": 0,
       "heroSpacing": 0,
-      "isoCountX": 4,
-      "isoCountZ": 3,
-      "isoSpacingX": 2.75,
-      "isoSpacingZ": 3,
+      "isoCountX": 24,
+      "isoCountZ": 24,
+      "isoSpacingX": 2,
+      "isoSpacingZ": 2,
       "isoRowOffset": 0.5,
       "waveAmplitude": 1.2,
       "waveLength": 1,
@@ -144,14 +146,14 @@
       "extraRotX": 90,
       "extraRotY": 0,
       "extraRotZ": 0,
-      "yawDeg": 6
+      "yawDeg": 0
     },
     "stagger": {
       "enabled": false,
       "axis": "y",
       "source": "index",
       "curve": "smoothstep",
-      "amountDeg": 240,
+      "amountDeg": -22,
       "falloff": 1,
       "direction": 1,
       "noiseScale": 0.2,
@@ -168,16 +170,19 @@
       "autoIncreaseSpacing": true,
       "maxAutoSpacingFactor": 2
     },
-    "export": { "scale": 3, "filename": "disks.png" },
+    "export": {
+      "scale": 3,
+      "filename": "disks.png"
+    },
     "camera": {
-      "lockFraming": true,
+      "lockFraming": false,
       "syncFromOrbit": true,
-      "azimuthDeg": 15.3,
-      "polarDeg": 41.03,
-      "distance": 15.5,
-      "targetX": 0.7,
-      "targetY": 1.45,
-      "targetZ": 1.15
+      "azimuthDeg": 44.999999999999964,
+      "polarDeg": 54.69999999999995,
+      "distance": 30,
+      "targetX": 0,
+      "targetY": 0,
+      "targetZ": -2.6669414729212786
     }
   }
 }
