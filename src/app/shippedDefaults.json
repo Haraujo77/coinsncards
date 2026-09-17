@@ -1535,7 +1535,7 @@
       "varyThickness": 0.03
     },
     "distribution": {
-      "type": "sphereShell",
+      "type": "spiral",
       "fillMode": "outline",
       "loopShape": "circle",
       "loopUseRadius": true,
@@ -1554,8 +1554,8 @@
       "offsetZPerCol": 0,
       "offsetYPerLayer": 0,
       "alternateOffset": true,
-      "count": 250,
-      "radius": 10,
+      "count": 90,
+      "radius": 2.96,
       "innerRadius": 7,
       "height": 6,
       "turns": 4,
@@ -1638,7 +1638,7 @@
     },
     "orientation": {
       "mode": "outFromCenter",
-      "extraRotX": 0,
+      "extraRotX": 11,
       "extraRotY": 0,
       "extraRotZ": 0,
       "yawDeg": 0
@@ -1646,9 +1646,9 @@
     "stagger": {
       "enabled": true,
       "axis": "z",
-      "source": "distCenter",
+      "source": "gradY",
       "curve": "smoothstep",
-      "amountDeg": 180,
+      "amountDeg": 30,
       "falloff": 2,
       "direction": 1,
       "noiseScale": 0.2,
@@ -1672,9 +1672,9 @@
     "camera": {
       "lockFraming": true,
       "syncFromOrbit": true,
-      "azimuthDeg": 45,
-      "polarDeg": 45,
-      "distance": 22,
+      "azimuthDeg": -17.275789962825435,
+      "polarDeg": 63.666356877317526,
+      "distance": 17.498775950280688,
       "targetX": 0,
       "targetY": 0,
       "targetZ": 0
